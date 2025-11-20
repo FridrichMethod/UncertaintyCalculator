@@ -11,6 +11,13 @@ type ResultUnit = str | int
 
 
 class UncertaintyCalculator:
+    """A calculator for error propagation in physical experiments using symbolic differentiation.
+
+    This calculator takes an equation and variables with uncertainties, computes the partial
+    derivatives, and propagates the uncertainties to find the final result and its error.
+    It outputs the full calculation steps in LaTeX format.
+    """
+
     def __init__(
         self,
         equation: Equation,
@@ -21,6 +28,19 @@ class UncertaintyCalculator:
         insert: int | bool,
         include_equation_number: int | bool,
     ) -> None:
+        """Initialize the UncertaintyCalculator.
+
+        Args:
+            equation: A list containing the LHS and RHS of the equation as strings.
+            variable: A list of tuples defining variables and their LaTeX representations.
+                      Example: [("K = 4 +- 0", "K"), ...]
+            result_digit: A dictionary specifying decimal places for 'mu' and 'sigma'.
+            result_unit: The unit string (e.g. r"\\si{V}") or 1 if dimensionless.
+            separate: If True (or 1), prints calculation steps in separate equation blocks.
+            insert: If True (or 1), includes an intermediate step showing values plugged into the formula.
+            include_equation_number: If True (or 1), uses numbered 'equation' environments; otherwise 'equation*'.
+
+        """
         self.equation = equation
         self.variable = variable
         self.result_digit = result_digit
@@ -71,6 +91,7 @@ class UncertaintyCalculator:
         print(*args, file=self._buffer, end=end, sep=sep)
 
     def _latex_number(self, expr: Any) -> str:
+        """Convert a numeric expression to its LaTeX representation."""
         return latex(
             expr,
             inv_trig_style="full",
@@ -80,6 +101,7 @@ class UncertaintyCalculator:
         )
 
     def _latex_symbol(self, expr: Any) -> str:
+        """Convert a symbolic expression to LaTeX using the defined symbol mappings."""
         return latex(
             expr,
             inv_trig_style="full",
@@ -89,6 +111,7 @@ class UncertaintyCalculator:
         )
 
     def _latex_value(self, expr: Any) -> str:
+        """Convert an expression to LaTeX using the defined value mappings (for substitution steps)."""
         return latex(
             expr,
             inv_trig_style="full",
@@ -151,14 +174,14 @@ class UncertaintyCalculator:
         for sym in self.syms:
             if self.check_unc[sym]:
                 pdv = simplify(diff(self.equation_right, sym))
-                num = pdv.subs(self.output_number)
+                num = pdv.subs(self.output_number)  # type: ignore
                 self.pdv_results.append((sym, pdv, num))
             else:
                 self.pdv_results.append((sym, sympify(0), sympify(0)))
 
         # Calculate Mu (Mean)
         self.result_mu = self._latex_number(
-            self.equation_right.evalf(self.result_digit["mu"], subs=self.output_number)
+            self.equation_right.evalf(self.result_digit["mu"], subs=self.output_number)  # type: ignore
         )
 
         # Calculate Sigma (Uncertainty)
@@ -166,25 +189,31 @@ class UncertaintyCalculator:
         pdv_nums = [res[2] for res in self.pdv_results]
 
         sum_squares = sum(
-            (num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_nums, self.input_sigma)
+            (num * sympify(sigma)) ** 2
+            for num, sigma in zip(pdv_nums, self.input_sigma)  # type: ignore
         )
-        self.result_sigma = self._latex_number(sqrt(sum_squares).evalf(self.result_digit["sigma"]))
+        self.result_sigma = self._latex_number(
+            sqrt(sum_squares).evalf(self.result_digit["sigma"])  # type: ignore
+        )
 
     # --- Rendering Methods ---
 
     def _print_env_start(self, aligned: bool = False) -> None:
+        """Print the start of an equation environment."""
         suffix = "" if self.include_equation_number else "*"
         self._print(f"\\begin{{equation{suffix}}}")
         if aligned:
             self._print("\\begin{aligned}")
 
     def _print_env_end(self, aligned: bool = False) -> None:
+        """Print the end of an equation environment."""
         suffix = "" if self.include_equation_number else "*"
         if aligned:
             self._print("\\end{aligned}")
         self._print(f"\\end{{equation{suffix}}}")
 
     def _render_combined(self) -> None:
+        """Render output when 'separate' is False (all steps in one aligned block)."""
         self._print_env_start(aligned=True)
         self._render_equation_def(aligned=True)
         self._render_pdvs(aligned=True)
@@ -194,6 +223,7 @@ class UncertaintyCalculator:
         self._print_env_end(aligned=True)
 
     def _render_separate(self) -> None:
+        """Render output when 'separate' is True (steps in separate equation blocks)."""
         # 1. Equation Definition
         self._print_env_start(aligned=False)
         self._render_equation_def(aligned=False)
