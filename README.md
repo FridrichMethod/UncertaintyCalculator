@@ -81,9 +81,9 @@ digits = {
 last_unit = r'\text{kJ}/{}^\circ\text{C}'
 
 # Formatting flags
-separate = 1                # 1: Separate blocks, 0: Combined block
-insert = 1                  # 1: Show intermediate substitution steps
-include_equation_number = 1 # 1: Use numbered equations, 0: Use unnumbered (equation*)
+separate = True             # True: Separate blocks, False: Combined block
+insert = True               # True: Show intermediate substitution steps
+include_equation_number = True # True: Use numbered equations, False: Use unnumbered (equation*)
 ```
 
 ### 4. Run the Calculator

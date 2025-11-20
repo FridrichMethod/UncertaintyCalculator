@@ -30,13 +30,13 @@ digits = {
 last_unit = r"\si{V}"
 
 # Print separately or integrally
-separate = 0
+separate = False
 
 # Insert numbers or not
-insert = 0
+insert = False
 
 # Include equation number or not
-include_equation_number = 1
+include_equation_number = True
 
 
 def main() -> None:

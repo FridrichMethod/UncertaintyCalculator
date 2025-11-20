@@ -24,9 +24,9 @@ class UncertaintyCalculator:
         variables: Variables,
         digits: Digits,
         last_unit: LastUnit,
-        separate: int | bool,
-        insert: int | bool,
-        include_equation_number: int | bool,
+        separate: bool,
+        insert: bool,
+        include_equation_number: bool,
     ) -> None:
         """Initialize the UncertaintyCalculator.
 
@@ -36,18 +36,18 @@ class UncertaintyCalculator:
                       Example: [("K = 4 +- 0", "K"), ...]
             digits: A dictionary specifying decimal places for 'mu' and 'sigma'.
             last_unit: The unit string (e.g. r"\\si{V}") or 1 if dimensionless.
-            separate: If True (or 1), prints calculation steps in separate equation blocks.
-            insert: If True (or 1), includes an intermediate step showing values plugged into the formula.
-            include_equation_number: If True (or 1), uses numbered 'equation' environments; otherwise 'equation*'.
+            separate: If True, prints calculation steps in separate equation blocks.
+            insert: If True, includes an intermediate step showing values plugged into the formula.
+            include_equation_number: If True, uses numbered 'equation' environments; otherwise 'equation*'.
 
         """
         self.equation = equation
         self.variables = variables
         self.digits = digits
         self.last_unit = last_unit
-        self.separate = bool(separate)
-        self.insert = bool(insert)
-        self.include_equation_number = bool(include_equation_number)
+        self.separate = separate
+        self.insert = insert
+        self.include_equation_number = include_equation_number
 
         # Parsing state
         self._buffer: io.StringIO | None = None
