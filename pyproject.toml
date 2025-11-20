@@ -56,7 +56,7 @@ select = [
   "C90", # mccabe
   "I",   # isort
   # "N",   # pep8-naming
-  # "D",   # pydocstyle
+  "D",  # pydocstyle
   "UP", # pyupgrade
   # "YTT", # flake8-2020
   # "ANN", # flake8-annotations
