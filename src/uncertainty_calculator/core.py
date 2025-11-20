@@ -5,9 +5,9 @@ from sympy import Symbol, diff, latex, simplify, sqrt, symbols, sympify
 
 # Type definitions matching Python 3.12 style
 type Equation = list[str]
-type Variable = list[tuple[str, str]]
-type ResultDigit = dict[str, int]
-type ResultUnit = str | int
+type Variables = list[tuple[str, str]]
+type Digits = dict[str, int]
+type LastUnit = str | int
 
 
 class UncertaintyCalculator:
@@ -21,9 +21,9 @@ class UncertaintyCalculator:
     def __init__(
         self,
         equation: Equation,
-        variable: Variable,
-        result_digit: ResultDigit,
-        result_unit: ResultUnit,
+        variables: Variables,
+        digits: Digits,
+        last_unit: LastUnit,
         separate: int | bool,
         insert: int | bool,
         include_equation_number: int | bool,
@@ -32,19 +32,19 @@ class UncertaintyCalculator:
 
         Args:
             equation: A list containing the LHS and RHS of the equation as strings.
-            variable: A list of tuples defining variables and their LaTeX representations.
+            variables: A list of tuples defining variables and their LaTeX representations.
                       Example: [("K = 4 +- 0", "K"), ...]
-            result_digit: A dictionary specifying decimal places for 'mu' and 'sigma'.
-            result_unit: The unit string (e.g. r"\\si{V}") or 1 if dimensionless.
+            digits: A dictionary specifying decimal places for 'mu' and 'sigma'.
+            last_unit: The unit string (e.g. r"\\si{V}") or 1 if dimensionless.
             separate: If True (or 1), prints calculation steps in separate equation blocks.
             insert: If True (or 1), includes an intermediate step showing values plugged into the formula.
             include_equation_number: If True (or 1), uses numbered 'equation' environments; otherwise 'equation*'.
 
         """
         self.equation = equation
-        self.variable = variable
-        self.result_digit = result_digit
-        self.result_unit = result_unit
+        self.variables = variables
+        self.digits = digits
+        self.last_unit = last_unit
         self.separate = bool(separate)
         self.insert = bool(insert)
         self.include_equation_number = bool(include_equation_number)
@@ -133,7 +133,7 @@ class UncertaintyCalculator:
         input_fullmu: list[str] = []
         input_fullsigma: list[str] = []
 
-        for var_def, latex_repr in self.variable:
+        for var_def, latex_repr in self.variables:
             # Format: "K = 4 +- 0"
             parts = var_def.split("=")
             sym_str = parts[0].strip()
@@ -181,7 +181,7 @@ class UncertaintyCalculator:
 
         # Calculate Mu (Mean)
         self.result_mu = self._latex_number(
-            self.equation_right.evalf(self.result_digit["mu"], subs=self.output_number)  # type: ignore
+            self.equation_right.evalf(self.digits["mu"], subs=self.output_number)  # type: ignore
         )
 
         # Calculate Sigma (Uncertainty)
@@ -193,7 +193,7 @@ class UncertaintyCalculator:
             for num, sigma in zip(pdv_nums, self.input_sigma)  # type: ignore
         )
         self.result_sigma = self._latex_number(
-            sqrt(sum_squares).evalf(self.result_digit["sigma"])  # type: ignore
+            sqrt(sum_squares).evalf(self.digits["sigma"])  # type: ignore
         )
 
     # --- Rendering Methods ---
@@ -264,10 +264,10 @@ class UncertaintyCalculator:
             self._print(self._latex_value(self.equation_right), end="=")
 
         # Format result string with unit
-        if self.result_unit == 1:
+        if self.last_unit == 1:
             res_str = self.result_mu
         else:
-            res_str = f"{self.result_mu}\\ {self.result_unit}"
+            res_str = f"{self.result_mu}\\ {self.last_unit}"
 
         if aligned:
             # In combined mode, include extra newlines for spacing
@@ -340,10 +340,10 @@ class UncertaintyCalculator:
         # 4. Final Sigma Result
         self._print("&=", end="")
 
-        if self.result_unit == 1:
+        if self.last_unit == 1:
             res_str = self.result_sigma
         else:
-            res_str = f"{self.result_sigma}\\ {self.result_unit}"
+            res_str = f"{self.result_sigma}\\ {self.last_unit}"
 
         if not self.separate:
             # Combined block needs extra newlines
@@ -356,9 +356,9 @@ class UncertaintyCalculator:
         """Render the final result line with +/- uncertainty."""
         separator = "&=" if aligned else "="
 
-        if self.result_unit == 1:
+        if self.last_unit == 1:
             self._print(f"{self.equation_left}{separator}{self.result_mu} \\pm {self.result_sigma}")
         else:
             self._print(
-                f"{self.equation_left}{separator}\\left ({self.result_mu} \\pm {self.result_sigma} \\right )\\ {self.result_unit}"
+                f"{self.equation_left}{separator}\\left ({self.result_mu} \\pm {self.result_sigma} \\right )\\ {self.last_unit}"
             )

@@ -30,7 +30,7 @@ equation = [
 ]
 ```
 
-## Define variable: `('symbol = mu +- sigma', string)`
+## Define variables: `('symbol = mu +- sigma', string)`
 
 `symbol` is a temporary abbreviation of each variable, which should be consistent with `expression`, and will not exist in output.
 
@@ -43,7 +43,7 @@ equation = [
 eg.
 
 ```python
-variable = [
+variables = [
     ('Q_V = -26.414 +- 0', r'Q_V'),
     ('m = 0.9547 +- 0.0004/sqrt(3)', r'm'),
     ('Q_N = -0.323 +- 3.243*0.0004/sqrt(3)', r'Q_\ce{Ni}'),
@@ -60,20 +60,20 @@ variable = [
 eg.
 
 ```python
-result_digit = {
+digits = {
     'mu': 4,
     'sigma': 2,
 }
 ```
 
-## Set units of results: `result_unit = string`
+## Set units of results: `last_unit = string`
 
 `string` is a unit written in $\LaTeX$ format, which should be set to 1 if what you want to calculate is dimensionless.
 
 eg.
 
 ```python
-result_unit = r'\text{kJ}/{}^\circ\text{C}'
+last_unit = r'\text{kJ}/{}^\circ\text{C}'
 ```
 
 ## Separate equation or not: `separate = 0 or 1`

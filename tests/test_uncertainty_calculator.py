@@ -17,8 +17,8 @@ from uncertainty_calculator import UncertaintyCalculator
 # Define equation
 equation = [x.strip() for x in [r"\zeta ", r" (K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)"]]
 
-# Define variable
-variable = [
+# Define variables
+variables = [
     ("K = 4 +- 0", r"K"),
     ("eta = 0.9358e-3 +- 0.0001/sqrt(3)", r"\eta"),
     ("u = 3.68e-5 +- 0.11e-5", r"u"),
@@ -29,25 +29,25 @@ variable = [
 ]
 
 
-@pytest.mark.parametrize("result_digit_mu", [2, 3])
-@pytest.mark.parametrize("result_digit_sigma", [2, 3])
-@pytest.mark.parametrize("result_unit", [r"\si{V}", 1])
+@pytest.mark.parametrize("digits_mu", [2, 3])
+@pytest.mark.parametrize("digits_sigma", [2, 3])
+@pytest.mark.parametrize("last_unit", [r"\si{V}", 1])
 @pytest.mark.parametrize("separate", [0, 1])
 @pytest.mark.parametrize("insert", [0, 1])
 @pytest.mark.parametrize("include_equation_number", [0, 1])
 def test_calculator_output_matches_legacy(
-    result_digit_mu, result_digit_sigma, result_unit, separate, insert, include_equation_number
+    digits_mu, digits_sigma, last_unit, separate, insert, include_equation_number
 ):
     # Prepare inputs
-    result_digit = {
-        "mu": result_digit_mu,
-        "sigma": result_digit_sigma,
+    digits = {
+        "mu": digits_mu,
+        "sigma": digits_sigma,
     }
 
     # Run Legacy (Oracle)
     expected_output = run_legacy_calculator(
-        result_digit=result_digit,
-        result_unit=result_unit,
+        digits=digits,
+        last_unit=last_unit,
         separate=separate,
         insert=insert,
         include_equation_number=include_equation_number,
@@ -56,9 +56,9 @@ def test_calculator_output_matches_legacy(
     # Run Refactored
     calculator = UncertaintyCalculator(
         equation=equation,
-        variable=variable,
-        result_digit=result_digit,
-        result_unit=result_unit,
+        variables=variables,
+        digits=digits,
+        last_unit=last_unit,
         separate=separate,
         insert=insert,
         include_equation_number=include_equation_number,

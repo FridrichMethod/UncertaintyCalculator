@@ -9,8 +9,8 @@ from uncertainty_calculator import UncertaintyCalculator
 # Define equation
 equation = [x.strip() for x in [r"\zeta ", r" (K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)"]]
 
-# Define variable
-variable = [
+# Define variables
+variables = [
     ("K = 4 +- 0", r"K"),
     ("eta = 0.9358e-3 +- 0.0001/sqrt(3)", r"\eta"),
     ("u = 3.68e-5 +- 0.11e-5", r"u"),
@@ -21,13 +21,13 @@ variable = [
 ]
 
 # Set digits of results
-result_digit = {
+digits = {
     "mu": 3,
     "sigma": 3,
 }
 
 # Set units of results
-result_unit = r"\si{V}"
+last_unit = r"\si{V}"
 
 # Print separately or integrally
 separate = 0
@@ -43,9 +43,9 @@ def main() -> None:
     """Main function to run the calculator."""
     calculator = UncertaintyCalculator(
         equation=equation,
-        variable=variable,
-        result_digit=result_digit,
-        result_unit=result_unit,
+        variables=variables,
+        digits=digits,
+        last_unit=last_unit,
         separate=separate,
         insert=insert,
         include_equation_number=include_equation_number,
