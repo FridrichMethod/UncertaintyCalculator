@@ -1,16 +1,11 @@
-# -*- coding:utf-8 -*-
-# Copyright @FridrichMethod
+# Copyright https://github.com/FridrichMethod.
 
 from sympy import *
 
 # Input
 
 # Define equation
-equation = [
-    x.strip() for x in
-    r"\zeta = (K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)"
-    .split("=")
-]
+equation = [x.strip() for x in [r"\zeta ", r" (K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)"]]
 
 # Define variable
 variable = [
@@ -72,9 +67,7 @@ for x in variable:
     input_fullunc.append(f"\\sigma_{{{x[1].strip()}}}")
     input_mu.append(input_value[0].strip())
     input_sigma.append(input_value[1].strip())
-    input_fullmu.append(
-        f"\\left({latex_number(sympify(input_value[0].strip()))}\\right)"
-    )
+    input_fullmu.append(f"\\left({latex_number(sympify(input_value[0].strip()))}\\right)")
     input_fullsigma.append(latex_number(sympify(input_value[1].strip()).evalf(2)))
 
 syms = symbols(input_sym)
@@ -123,9 +116,7 @@ if insert:
         print(equation_left, end="&=")
         print(latex_symbol(equation_right), end="=")
         print(latex_value(equation_right), end="=")
-        result_mu = latex_number(
-            equation_right.evalf(result_digit["mu"], subs=output_number)
-        )
+        result_mu = latex_number(equation_right.evalf(result_digit["mu"], subs=output_number))
         if result_unit == 1:
             print(result_mu + "\\\\\n\\\\")
         else:
@@ -169,7 +160,7 @@ if insert:
         print(
             "&=\\sqrt{"
             + "+".join(
-                f"\\left({latex_number((num*sympify(output_number[unc])).evalf(2))}\\right)^2"
+                f"\\left({latex_number((num * sympify(output_number[unc])).evalf(2))}\\right)^2"
                 for num, unc in zip(pdv_number, uncs)
                 if sympify(output_number[unc])
             )
@@ -177,10 +168,7 @@ if insert:
         )
         result_sigma = latex_number(
             sqrt(
-                sum(
-                    (num * sympify(sigma)) ** 2
-                    for num, sigma in zip(pdv_number, input_sigma)
-                )
+                sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))
             ).evalf(result_digit["sigma"])
         )
         print("&=", end="")
@@ -211,9 +199,7 @@ if insert:
         print(equation_left, end="=")
         print(latex_symbol(equation_right), end="=")
         print(latex_value(equation_right), end="=")
-        result_mu = latex_number(
-            equation_right.evalf(result_digit["mu"], subs=output_number)
-        )
+        result_mu = latex_number(equation_right.evalf(result_digit["mu"], subs=output_number))
         if result_unit == 1:
             print(result_mu)
         else:
@@ -282,7 +268,7 @@ if insert:
         print(
             "&=\\sqrt{"
             + "+".join(
-                f"\\left({latex_number((num*sympify(output_number[unc])).evalf(2))}\\right)^2"
+                f"\\left({latex_number((num * sympify(output_number[unc])).evalf(2))}\\right)^2"
                 for num, unc in zip(pdv_number, uncs)
                 if sympify(output_number[unc])
             )
@@ -290,10 +276,7 @@ if insert:
         )
         result_sigma = latex_number(
             sqrt(
-                sum(
-                    (num * sympify(sigma)) ** 2
-                    for num, sigma in zip(pdv_number, input_sigma)
-                )
+                sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))
             ).evalf(result_digit["sigma"])
         )
         print("&=", end="")
@@ -323,192 +306,177 @@ if insert:
             )
         print("\\end{equation}" if include_equation_number else "\\end{equation}*")
 
-else:
-    if not separate:
-        print(
-            """\\begin{equation}
+elif not separate:
+    print(
+        """\\begin{equation}
 \\begin{aligned}"""
-            if include_equation_number
-            else """\\begin{equation*}
+        if include_equation_number
+        else """\\begin{equation*}
 \\begin{aligned}"""
-        )
-        print(equation_left, end="&=")
-        print(latex_symbol(equation_right), end="=")
-        result_mu = latex_number(
-            equation_right.evalf(result_digit["mu"], subs=output_number)
-        )
-        if result_unit == 1:
-            print(result_mu + "\\\\\n\\\\")
-        else:
-            print(f"{result_mu}\\ " + result_unit + "\\\\\n\\\\")
-
-        pdv_number = []
-        for sym in syms:
-            if check_unc[sym]:
-                print(
-                    f"\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }}",
-                    end="&=",
-                )
-                pdv = simplify(diff(equation_right, sym))
-                print(latex_symbol(pdv), end="=")
-                num = pdv.subs(output_number)
-                pdv_number.append(num)
-                print(latex_number(num.evalf(2)), end="\\\\\n")
-            else:
-                pdv_number.append(sympify(0))
-        print("\\\\")
-
-        print(
-            f"\\sigma_{{{equation_left}}}&=\\sqrt{{"
-            + "+".join(
-                f"\\left(\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }} {fullunc}\\right)^2"
-                for sym, fullunc in zip(syms, input_fullunc)
-                if check_unc[sym]
-            )
-            + "}\\\\"
-        )
-        print(
-            "&=\\sqrt{"
-            + "+".join(
-                f"\\left({latex_number((num*sympify(output_number[unc])).evalf(2))}\\right)^2"
-                for num, unc in zip(pdv_number, uncs)
-                if sympify(output_number[unc])
-            )
-            + "}\\\\"
-        )
-        result_sigma = latex_number(
-            sqrt(
-                sum(
-                    (num * sympify(sigma)) ** 2
-                    for num, sigma in zip(pdv_number, input_sigma)
-                )
-            ).evalf(result_digit["sigma"])
-        )
-        print("&=", end="")
-        if result_unit == 1:
-            print(result_sigma + "\\\\\n\\\\")
-        else:
-            print(f"{result_sigma}\\ " + result_unit + "\\\\\n\\\\")
-
-        # Result
-
-        if result_unit == 1:
-            print(f"{equation_left}&={result_mu} \\pm {result_sigma}")
-        else:
-            print(
-                f"{equation_left}&=\\left ({result_mu} \\pm {result_sigma} \\right )\\ "
-                + result_unit
-            )
-        print(
-            """\\end{aligned}
-\\end{equation}"""
-            if include_equation_number
-            else """\\end{aligned}
-\\end{equation*}"""
-        )
-
+    )
+    print(equation_left, end="&=")
+    print(latex_symbol(equation_right), end="=")
+    result_mu = latex_number(equation_right.evalf(result_digit["mu"], subs=output_number))
+    if result_unit == 1:
+        print(result_mu + "\\\\\n\\\\")
     else:
-        print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
-        print(equation_left, end="=")
-        print(latex_symbol(equation_right), end="=")
-        result_mu = latex_number(
-            equation_right.evalf(result_digit["mu"], subs=output_number)
-        )
-        if result_unit == 1:
-            print(result_mu)
-        else:
-            print(f"{result_mu}\\ " + result_unit)
-        print("\\end{equation}" if include_equation_number else "\\end{equation*}")
+        print(f"{result_mu}\\ " + result_unit + "\\\\\n\\\\")
 
-        pdv_number = []
+    pdv_number = []
+    for sym in syms:
+        if check_unc[sym]:
+            print(
+                f"\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }}",
+                end="&=",
+            )
+            pdv = simplify(diff(equation_right, sym))
+            print(latex_symbol(pdv), end="=")
+            num = pdv.subs(output_number)
+            pdv_number.append(num)
+            print(latex_number(num.evalf(2)), end="\\\\\n")
+        else:
+            pdv_number.append(sympify(0))
+    print("\\\\")
+
+    print(
+        f"\\sigma_{{{equation_left}}}&=\\sqrt{{"
+        + "+".join(
+            f"\\left(\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }} {fullunc}\\right)^2"
+            for sym, fullunc in zip(syms, input_fullunc)
+            if check_unc[sym]
+        )
+        + "}\\\\"
+    )
+    print(
+        "&=\\sqrt{"
+        + "+".join(
+            f"\\left({latex_number((num * sympify(output_number[unc])).evalf(2))}\\right)^2"
+            for num, unc in zip(pdv_number, uncs)
+            if sympify(output_number[unc])
+        )
+        + "}\\\\"
+    )
+    result_sigma = latex_number(
+        sqrt(sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))).evalf(
+            result_digit["sigma"]
+        )
+    )
+    print("&=", end="")
+    if result_unit == 1:
+        print(result_sigma + "\\\\\n\\\\")
+    else:
+        print(f"{result_sigma}\\ " + result_unit + "\\\\\n\\\\")
+
+    # Result
+
+    if result_unit == 1:
+        print(f"{equation_left}&={result_mu} \\pm {result_sigma}")
+    else:
         print(
-            """
+            f"{equation_left}&=\\left ({result_mu} \\pm {result_sigma} \\right )\\ " + result_unit
+        )
+    print(
+        """\\end{aligned}
+\\end{equation}"""
+        if include_equation_number
+        else """\\end{aligned}
+\\end{equation*}"""
+    )
+
+else:
+    print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
+    print(equation_left, end="=")
+    print(latex_symbol(equation_right), end="=")
+    result_mu = latex_number(equation_right.evalf(result_digit["mu"], subs=output_number))
+    if result_unit == 1:
+        print(result_mu)
+    else:
+        print(f"{result_mu}\\ " + result_unit)
+    print("\\end{equation}" if include_equation_number else "\\end{equation*}")
+
+    pdv_number = []
+    print(
+        """
 \\begin{equation}
 \\begin{aligned}"""
-            if include_equation_number
-            else """
+        if include_equation_number
+        else """
 \\begin{equation*}
 \\begin{aligned}"""
-        )
-        for sym in syms:
-            if check_unc[sym]:
-                print(
-                    f"\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }}",
-                    end="&=",
-                )
-                pdv = simplify(diff(equation_right, sym))
-                print(latex_symbol(pdv), end="=")
-                num = pdv.subs(output_number)
-                pdv_number.append(num)
-                print(latex_number(num.evalf(2)), end="\\\\\n")
-            else:
-                pdv_number.append(sympify(0))
-        print(
-            """\\end{aligned}
-\\end{equation}
-"""
-            if include_equation_number
-            else """\\end{aligned}
-\\end{equation*}
-"""
-        )
-
-        print(
-            """\\begin{equation}
-\\begin{aligned}"""
-            if include_equation_number
-            else """\\begin{equation*}
-\\begin{aligned}"""
-        )
-        print(
-            f"\\sigma_{{{equation_left}}}&=\\sqrt{{"
-            + "+".join(
-                f"\\left(\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }} {fullunc}\\right)^2"
-                for sym, fullunc in zip(syms, input_fullunc)
-                if check_unc[sym]
-            )
-            + "}\\\\"
-        )
-        print(
-            "&=\\sqrt{"
-            + "+".join(
-                f"\\left({latex_number((num*sympify(output_number[unc])).evalf(2))}\\right)^2"
-                for num, unc in zip(pdv_number, uncs)
-                if sympify(output_number[unc])
-            )
-            + "}\\\\"
-        )
-        result_sigma = latex_number(
-            sqrt(
-                sum(
-                    (num * sympify(sigma)) ** 2
-                    for num, sigma in zip(pdv_number, input_sigma)
-                )
-            ).evalf(result_digit["sigma"])
-        )
-        print("&=", end="")
-        if result_unit == 1:
-            print(result_sigma)
-        else:
-            print(f"{result_sigma}\\ " + result_unit)
-        print(
-            """\\end{aligned}
-\\end{equation}
-"""
-            if include_equation_number
-            else """\\end{aligned}
-\\end{equation*}
-"""
-        )
-
-        # Result
-
-        print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
-        if result_unit == 1:
-            print(f"{equation_left}={result_mu} \\pm {result_sigma}")
-        else:
+    )
+    for sym in syms:
+        if check_unc[sym]:
             print(
-                f"{equation_left}=\\left ({result_mu} \\pm {result_sigma} \\right )\\ "
-                + result_unit
+                f"\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }}",
+                end="&=",
             )
-        print("\\end{equation}" if include_equation_number else "\\end{equation*}")
+            pdv = simplify(diff(equation_right, sym))
+            print(latex_symbol(pdv), end="=")
+            num = pdv.subs(output_number)
+            pdv_number.append(num)
+            print(latex_number(num.evalf(2)), end="\\\\\n")
+        else:
+            pdv_number.append(sympify(0))
+    print(
+        """\\end{aligned}
+\\end{equation}
+"""
+        if include_equation_number
+        else """\\end{aligned}
+\\end{equation*}
+"""
+    )
+
+    print(
+        """\\begin{equation}
+\\begin{aligned}"""
+        if include_equation_number
+        else """\\begin{equation*}
+\\begin{aligned}"""
+    )
+    print(
+        f"\\sigma_{{{equation_left}}}&=\\sqrt{{"
+        + "+".join(
+            f"\\left(\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }} {fullunc}\\right)^2"
+            for sym, fullunc in zip(syms, input_fullunc)
+            if check_unc[sym]
+        )
+        + "}\\\\"
+    )
+    print(
+        "&=\\sqrt{"
+        + "+".join(
+            f"\\left({latex_number((num * sympify(output_number[unc])).evalf(2))}\\right)^2"
+            for num, unc in zip(pdv_number, uncs)
+            if sympify(output_number[unc])
+        )
+        + "}\\\\"
+    )
+    result_sigma = latex_number(
+        sqrt(sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))).evalf(
+            result_digit["sigma"]
+        )
+    )
+    print("&=", end="")
+    if result_unit == 1:
+        print(result_sigma)
+    else:
+        print(f"{result_sigma}\\ " + result_unit)
+    print(
+        """\\end{aligned}
+\\end{equation}
+"""
+        if include_equation_number
+        else """\\end{aligned}
+\\end{equation*}
+"""
+    )
+
+    # Result
+
+    print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
+    if result_unit == 1:
+        print(f"{equation_left}={result_mu} \\pm {result_sigma}")
+    else:
+        print(f"{equation_left}=\\left ({result_mu} \\pm {result_sigma} \\right )\\ " + result_unit)
+    print("\\end{equation}" if include_equation_number else "\\end{equation*}")
