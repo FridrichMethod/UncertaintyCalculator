@@ -1,46 +1,56 @@
 # Uncertainty Calculator
 
-Help you get rid of Physical Chemistry Experiment in CCME!
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Python Versions](https://img.shields.io/badge/Python-3.12+-blue.svg?logo=python&logoColor=white)](https://python.org/downloads)
 
-## Package Requirements
+A Python tool for automated error propagation in physical experiments. This calculator uses symbolic differentiation to compute partial derivatives and propagate uncertainties, generating detailed LaTeX output for your reports.
+
+## Features
+
+- **Symbolic Differentiation**: Automatically calculates partial derivatives using `sympy`.
+- **Automated Error Propagation**: Computes the final uncertainty based on the standard error propagation formula.
+- **LaTeX Output**: Generates ready-to-use LaTeX code for equations, derivatives, and substitution steps.
+- **Customizable**: Configurable decimal precision, units, and output formatting.
+
+## Installation
+
+### Requirements
+
+- Python 3.12+
+- `sympy`
+
+### Install via pip
 
 ```shell
-pip install sympy
+conda create -n uncertainty-calculator python=3.12 -y
+conda activate uncertainty-calculator
+
+pip install uv
+uv pip install -e .
 ```
 
-or
+## Usage
 
-```shell
-conda install -c conda-forge sympy
-```
+The calculator is designed to be used as a Python module. Below is a complete example of how to configure and run calculation.
 
-## Define equation: `string = expression`
+### 1. Define the Equation
 
-`string` is the name of what you want to calculate.
-
-`expression` is a formula written in `Python` format.
-
-eg.
+The equation is defined as a list of strings containing the left-hand side (variable name) and the right-hand side (expression).
 
 ```python
+# Example: W = (-Q_V * m - Q_N - Q_M) / Dt - rho * V * C
 equation = [
     x.strip() for x in
-    r'W = (-Q_V*m-Q_N-Q_M)/Dt-rho*V*C'
-    .split('=')
+    r'W = (-Q_V*m-Q_N-Q_M)/Dt-rho*V*C'.split('=')
 ]
 ```
 
-## Define variables: `('symbol = mu +- sigma', string)`
+### 2. Define Variables
 
-`symbol` is a temporary abbreviation of each variable, which should be consistent with `expression`, and will not exist in output.
+Variables are defined as a list of tuples. Each tuple contains:
 
-`mu` is the expectation of each variable.
-
-`sigma` is the standard deviation of each variable.
-
-`string` is the name of each variable.
-
-eg.
+1. A string defining the variable's value and uncertainty (`symbol = value +- uncertainty`).
+2. The LaTeX representation of the variable symbol.
 
 ```python
 variables = [
@@ -53,58 +63,57 @@ variables = [
     ('C = 4.1824e-3 +- 0', r'C_\ce{H2O}'),
     ('Dt = 1.770 +- 0.009', r'\Delta T'),
 ]
+
 ```
 
-## Set digits of results: `{'mu': integer, 'sigma': integer}`
+### 3. Configuration
 
-eg.
+Configure the output format, precision, and units.
 
 ```python
+# Precision for result (mu) and uncertainty (sigma)
 digits = {
     'mu': 4,
     'sigma': 2,
 }
-```
 
-## Set units of results: `last_unit = string`
-
-`string` is a unit written in $\LaTeX$ format, which should be set to 1 if what you want to calculate is dimensionless.
-
-eg.
-
-```python
+# Final unit string in LaTeX (use 1 for dimensionless)
 last_unit = r'\text{kJ}/{}^\circ\text{C}'
+
+# Formatting flags
+separate = 1                # 1: Separate blocks, 0: Combined block
+insert = 1                  # 1: Show intermediate substitution steps
+include_equation_number = 1 # 1: Use numbered equations, 0: Use unnumbered (equation*)
 ```
 
-## Separate equation or not: `separate = 0 or 1`
+### 4. Run the Calculator
 
-eg.
+Import the `UncertaintyCalculator` and execute the calculation.
 
 ```python
-separate = 1
+from uncertainty_calculator import UncertaintyCalculator
+
+def main():
+    calculator = UncertaintyCalculator(
+        equation=equation,
+        variables=variables,
+        digits=digits,
+        last_unit=last_unit,
+        separate=separate,
+        insert=insert,
+        include_equation_number=include_equation_number
+    )
+    
+    # Print the generated LaTeX code
+    print(calculator.run(), end="")
+
+if __name__ == "__main__":
+    main()
 ```
 
-## Insert numbers or not: `insert = 0 or 1`
+## Output Example
 
-eg.
-
-```python
-insert = 1
-```
-
-## Include equation number or not: `include_equation_number = 0 or 1`
-
-eg.
-
-```python
-include_equation_number = 1
-```
-
-## Output
-
-$\LaTeX$ code of calculation details, including normal calculation, each partial derivative, total uncertainty combination, and the final result.
-
-eg.
+The tool generates LaTeX code that renders to standard physical chemistry calculation steps:
 
 ```latex
 \begin{equation}
@@ -115,17 +124,13 @@ W=- C_\ce{H2O} V \rho_\ce{H2O} + \frac{- Q_\text{cotton} - Q_\ce{Ni} - Q_V m}{\D
 \begin{aligned}
 \frac{\partial W }{\partial m }&=- \frac{Q_V}{\Delta T}=- \frac{\left(-26.414\right)}{\left(1.77\right)}=15.0\\
 \frac{\partial W }{\partial Q_\ce{Ni} }&=- \frac{1}{\Delta T}=- \frac{1}{\left(1.77\right)}=-0.57\\
-\frac{\partial W }{\partial Q_\text{cotton} }&=- \frac{1}{\Delta T}=- \frac{1}{\left(1.77\right)}=-0.57\\
-\frac{\partial W }{\partial V }&=- C_\ce{H2O} \rho_\ce{H2O}=- \left(0.0041824\right) \times \left(0.99865\right)=-0.0042\\
-\frac{\partial W }{\partial \Delta T }&=\frac{Q_\text{cotton} + Q_\ce{Ni} + Q_V m}{\Delta T^{2}}=\frac{\left(-0.01\right) + \left(-0.323\right) + \left(-26.414\right) \times \left(0.9547\right)}{\left(1.77\right)^{2}}=-8.2\\
+\dots
 \end{aligned}
 \end{equation}
 
 \begin{equation}
 \begin{aligned}
-\sigma_{W}&=\sqrt{\left(\frac{\partial W }{\partial m } \sigma_{m}\right)^2+\left(\frac{\partial W }{\partial Q_\ce{Ni} } \sigma_{Q_\ce{Ni}}\right)^2+\left(\frac{\partial W }{\partial Q_\text{cotton} } \sigma_{Q_\text{cotton}}\right)^2+\left(\frac{\partial W }{\partial V } \sigma_{V}\right)^2+\left(\frac{\partial W }{\partial \Delta T } \sigma_{\Delta T}\right)^2}\\
-&=\sqrt{\left(15.0 \times 0.00023\right)^2+\left(-0.57 \times 0.00075\right)^2+\left(-0.57 \times 0.0019\right)^2+\left(-0.0042 \times 0.01\right)^2+\left(-8.2 \times 0.009\right)^2}\\
-&=\sqrt{\left(0.0034\right)^2+\left(-0.00042\right)^2+\left(-0.0011\right)^2+\left(-0.000042\right)^2+\left(-0.073\right)^2}\\
+\sigma_{W}&=\sqrt{\left(\frac{\partial W }{\partial m } \sigma_{m}\right)^2+\dots}\\
 &=0.073\ \text{kJ}/{}^\circ\text{C}
 \end{aligned}
 \end{equation}
@@ -137,6 +142,9 @@ W=\left (1.905 \pm 0.073 \right )\ \text{kJ}/{}^\circ\text{C}
 
 ## Acknowledgements
 
-`Sympy`: <https://github.com/sympy/sympy>
+- **SymPy**: [https://github.com/sympy/sympy](https://github.com/sympy/sympy)
+- **LaTeX Live**: [https://latexlive.com](https://latexlive.com)
 
-$\LaTeX$公式编辑器: <https://latexlive.com>
+## License
+
+This project is licensed under the MIT License.
