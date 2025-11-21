@@ -1,24 +1,11 @@
-import sys
-from pathlib import Path
-
 import pytest
-
-# Ensure we import the package, not the script in root
-# We renamed the script to main.py, so the conflict is gone, but we still want to ensure src/ is in path if not installed.
-
-root_path = Path(__file__).parent.parent.resolve()
-src_path = str(root_path / "src")
-if src_path not in sys.path:
-    sys.path.insert(0, src_path)
 
 from tests.legacy_calculator import run_legacy_calculator
 from uncertainty_calculator import UncertaintyCalculator
 
-# Define equation
-equation = [x.strip() for x in [r"\zeta ", r" (K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)"]]
-
-# Define variables
-variables = [
+# Default test case data
+default_equation = [x.strip() for x in [r"\zeta ", r" (K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)"]]
+default_variables = [
     ("K = 4 +- 0", r"K"),
     ("eta = 0.9358e-3 +- 0.0001/sqrt(3)", r"\eta"),
     ("u = 3.68e-5 +- 0.11e-5", r"u"),
@@ -28,24 +15,73 @@ variables = [
     ("e_r = 78.7 +- 0.1/sqrt(3)", r"\varepsilon_\text{r}"),
 ]
 
+# Extended Test Case 1: From README
+readme_equation = [x.strip() for x in [r"W ", r" (-Q_V*m-Q_N-Q_M)/Dt-rho*V*C"]]
+readme_variables = [
+    ("Q_V = -26.414 +- 0", r"Q_V"),
+    ("m = 0.9547 +- 0.0004/sqrt(3)", r"m"),
+    ("Q_N = -0.323 +- 3.243*0.0004/sqrt(3)", r"Q_\ce{Ni}"),
+    ("Q_M = -0.01 +- 0.0002*16.736/sqrt(3)", r"Q_\text{cotton}"),
+    ("rho = 0.99865 +- 0", r"\rho_\ce{H2O}"),
+    ("V = 3000 +- 0.01", r"V"),
+    ("C = 4.1824e-3 +- 0", r"C_\ce{H2O}"),
+    ("Dt = 1.770 +- 0.009", r"\Delta T"),
+]
 
-@pytest.mark.parametrize("digits_mu", [2, 3])
+# Extended Test Case 2: Simple Linear
+linear_equation = ["y", "m*x + b"]
+linear_variables = [
+    ("m = 2.5 +- 0.1", "m"),
+    ("x = 4.0 +- 0.2", "x"),
+    ("b = 1.0 +- 0.5", "b"),
+]
+
+# Extended Test Case 3: Power Law
+power_equation = ["E", "0.5 * m * v**2"]
+power_variables = [
+    ("m = 10.0 +- 0.5", "m"),
+    ("v = 5.0 +- 0.1", "v"),
+]
+
+# Test Data Collection
+test_cases = [
+    ("default", default_equation, default_variables),
+    ("readme", readme_equation, readme_variables),
+    ("linear", linear_equation, linear_variables),
+    ("power", power_equation, power_variables),
+]
+
+
+@pytest.mark.parametrize("case_name, equation, variables", test_cases)
+@pytest.mark.parametrize("digits_mu", [3, 4])
 @pytest.mark.parametrize("digits_sigma", [2, 3])
-@pytest.mark.parametrize("last_unit", [r"\si{V}", 1])
-@pytest.mark.parametrize("separate", [0, 1])
-@pytest.mark.parametrize("insert", [0, 1])
-@pytest.mark.parametrize("include_equation_number", [0, 1])
+@pytest.mark.parametrize("last_unit", [r"\si{V}", "", 1])
+@pytest.mark.parametrize("separate", [True, False])
+@pytest.mark.parametrize("insert", [True, False])
+@pytest.mark.parametrize("include_equation_number", [True, False])
 def test_calculator_output_matches_legacy(
-    digits_mu, digits_sigma, last_unit, separate, insert, include_equation_number
+    case_name,
+    equation,
+    variables,
+    digits_mu,
+    digits_sigma,
+    last_unit,
+    separate,
+    insert,
+    include_equation_number,
 ):
+    print(f"Running test case: {case_name}")
+
     # Prepare inputs
     digits = {
         "mu": digits_mu,
         "sigma": digits_sigma,
     }
 
-    # Run Legacy (Oracle)
+    # Run Legacy (Oracle) with injected equation/variables
     expected_output = run_legacy_calculator(
+        equation=equation,
+        variables=variables,
         digits=digits,
         last_unit=last_unit,
         separate=separate,

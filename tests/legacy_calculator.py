@@ -4,24 +4,16 @@ import io
 
 from sympy import *
 
-# Input
 
-# Define equation
-equation = [x.strip() for x in [r"\zeta ", r" (K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)"]]
-
-# Define variables
-variables = [
-    ("K = 4 +- 0", r"K"),
-    ("eta = 0.9358e-3 +- 0.0001/sqrt(3)", r"\eta"),
-    ("u = 3.68e-5 +- 0.11e-5", r"u"),
-    ("l = 0.2256 +- 0.0019", r"l"),
-    ("phi = 100 +- 1/sqrt(3)", r"\varphi"),
-    ("e_0 = 8.8541878128e-12 +- 0", r"\varepsilon_0"),
-    ("e_r = 78.7 +- 0.1/sqrt(3)", r"\varepsilon_\text{r}"),
-]
-
-
-def run_legacy_calculator(digits, last_unit, separate, insert, include_equation_number):
+def run_legacy_calculator(
+    equation: list[str],
+    variables: list[tuple[str, str]],
+    digits: dict[str, int],
+    last_unit: str | int,
+    separate: bool,
+    insert: bool,
+    include_equation_number: bool,
+):
     output_buffer = io.StringIO()
 
     def print(*args, **kwargs):
@@ -33,6 +25,7 @@ def run_legacy_calculator(digits, last_unit, separate, insert, include_equation_
     import builtins
 
     # Parse
+
     input_sym = []
     input_unc = []
     input_fullsym = []
