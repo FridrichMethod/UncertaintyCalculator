@@ -33,9 +33,8 @@ class UncertaintyCalculator:
         Args:
             equation: A list containing the LHS and RHS of the equation as strings.
             variables: A list of tuples defining variables and their LaTeX representations.
-                      Example: [("K = 4 +- 0", "K"), ...]
             digits: A dictionary specifying decimal places for 'mu' and 'sigma'.
-            last_unit: The unit string (e.g. r"\\si{V}") or 1 if dimensionless.
+            last_unit: The unit string or 1 if dimensionless.
             separate: If True, prints calculation steps in separate equation blocks.
             insert: If True, includes an intermediate step showing values plugged into the formula.
             include_equation_number: If True, uses numbered 'equation' environments; otherwise 'equation*'.
@@ -82,8 +81,6 @@ class UncertaintyCalculator:
 
         return self._buffer.getvalue()
 
-    # --- Output Helpers ---
-
     def _print(self, *args: Any, **kwargs: Any) -> None:
         """Print to the internal buffer."""
         end = kwargs.get("end", "\n")
@@ -120,8 +117,6 @@ class UncertaintyCalculator:
             mul_symbol="times",
             symbol_names=self.output_value,
         )
-
-    # --- Core Logic Steps ---
 
     def _parse_inputs(self) -> None:
         """Parse variables and initialize sympy symbols."""
@@ -195,8 +190,6 @@ class UncertaintyCalculator:
         self.result_sigma = self._latex_number(
             sqrt(sum_squares).evalf(self.digits["sigma"])  # type: ignore
         )
-
-    # --- Rendering Methods ---
 
     def _print_env_start(self, aligned: bool = False) -> None:
         """Print the start of an equation environment."""
