@@ -115,3 +115,46 @@ def test_parse_variables_invalid_definition():
     """Parser should reject invalid variable definitions."""
     with pytest.raises(ValueError):
         parse_variables([("invalid", "x")])
+
+
+def test_run_can_be_called_multiple_times_with_new_inputs():
+    """UncertaintyCalculator should not leak parsing state across run() calls."""
+    digits = Digits(mu=2, sigma=2)
+    calc = UncertaintyCalculator(
+        equation=Equation(lhs="y", rhs="x"),
+        variables=[Variable(name="x", value=1, uncertainty=0.1, latex_name="x")],
+        digits=digits,
+        last_unit=None,
+        separate=False,
+        insert=False,
+        include_equation_number=False,
+    )
+
+    first_output = calc.run()
+    assert "\\sigma_{x}" in first_output
+
+    # Update inputs on the same instance and run again
+    calc.equation = Equation(lhs="y", rhs="m")
+    calc.variables = [Variable(name="m", value=2, uncertainty=0.2, latex_name="m")]
+    second_output = calc.run()
+
+    assert "\\sigma_{m}" in second_output
+    assert "\\sigma_{x}" not in second_output
+
+
+def test_zero_uncertainty_renders_sigma_without_empty_sqrt():
+    """Sigma rendering should short-circuit when uncertainties are zero."""
+    digits = Digits(mu=2, sigma=2)
+    calc = UncertaintyCalculator(
+        equation=Equation(lhs="y", rhs="x"),
+        variables=[Variable(name="x", value=1, uncertainty=0, latex_name="x")],
+        digits=digits,
+        last_unit=None,
+        separate=False,
+        insert=False,
+        include_equation_number=False,
+    )
+
+    output = calc.run()
+    assert "\\sigma_{y}&=0" in output
+    assert "sqrt{" not in output

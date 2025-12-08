@@ -47,6 +47,13 @@ class Digits:
     mu: int
     sigma: int
 
+    def __post_init__(self) -> None:
+        """Validate that digit counts are positive integers."""
+        for field_name, value in (("mu", self.mu), ("sigma", self.sigma)):
+            if not isinstance(value, int) or value <= 0:
+                msg = f"{field_name} must be a positive integer (got {value!r})"
+                raise ValueError(msg)
+
 
 # Type definitions matching Python 3.12 style
 type Variables = Iterable[Variable]
@@ -76,7 +83,7 @@ class UncertaintyCalculator:
         Args:
             equation: An Equation object.
             variables: A list of Variable objects.
-            digits: A dictionary specifying decimal places for 'mu' and 'sigma'.
+            digits: A Digits config specifying decimal places for 'mu' and 'sigma'.
             last_unit: The unit string or None if dimensionless.
             separate: If True, prints calculation steps in separate equation blocks.
             insert: If True, includes an intermediate step showing values plugged into the formula.
@@ -164,6 +171,16 @@ class UncertaintyCalculator:
 
     def _parse_inputs(self) -> None:
         """Parse variables and initialize sympy symbols."""
+        # Reset per-run state so multiple run() calls remain valid
+        self.input_fullunc = []
+        self.input_sigma = []
+        self.syms = []
+        self.uncs = []
+        self.output_symbol = {}
+        self.output_number = {}
+        self.output_value = {}
+        self.check_unc = {}
+
         input_sym: list[str] = []
         input_unc: list[str] = []
         input_fullsym: list[str] = []
@@ -359,6 +376,22 @@ class UncertaintyCalculator:
 
     def _render_sigma(self, aligned: bool) -> None:
         """Render the sigma (uncertainty) calculation lines."""
+        has_uncertainty = any(self.check_unc[sym] for sym in self.syms)
+
+        if not has_uncertainty:
+            # Short-circuit when all uncertainties are zero to avoid empty sqrt blocks
+            res_str = (
+                self.result_sigma
+                if self.last_unit is None
+                else f"{self.result_sigma}\\ {self.last_unit}"
+            )
+            self._print(f"\\sigma_{{{self.equation_left}}}&=", end="")
+            if not self.separate:
+                self._print(f"{res_str}\\\\\n\\\\")
+            else:
+                self._print(res_str)
+            return
+
         # 1. Symbolic representation
         terms = []
         for sym, fullunc in zip(self.syms, self.input_fullunc):
