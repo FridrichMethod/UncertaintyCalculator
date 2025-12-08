@@ -1,3 +1,5 @@
+"""Core module for Uncertainty Calculator."""
+
 import io
 from typing import Any
 
@@ -257,10 +259,7 @@ class UncertaintyCalculator:
             self._print(self._latex_value(self.equation_right), end="=")
 
         # Format result string with unit
-        if self.last_unit == 1:
-            res_str = self.result_mu
-        else:
-            res_str = f"{self.result_mu}\\ {self.last_unit}"
+        res_str = self.result_mu if self.last_unit == 1 else f"{self.result_mu}\\ {self.last_unit}"
 
         if aligned:
             # In combined mode, include extra newlines for spacing

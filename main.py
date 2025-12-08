@@ -40,7 +40,7 @@ include_equation_number = True
 
 
 def main() -> None:
-    """Main function to run the calculator."""
+    """Run the calculator."""
     calculator = UncertaintyCalculator(
         equation=equation,
         variables=variables,

@@ -1,3 +1,5 @@
+"""Test suite for Uncertainty Calculator."""
+
 import pytest
 
 from tests.legacy_calculator import run_legacy_calculator
@@ -70,6 +72,7 @@ def test_calculator_output_matches_legacy(
     insert,
     include_equation_number,
 ):
+    """Test that the refactored calculator matches the legacy implementation."""
     print(f"Running test case: {case_name}")
 
     # Prepare inputs

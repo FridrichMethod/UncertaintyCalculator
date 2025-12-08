@@ -1,11 +1,14 @@
 # Copyright https://github.com/FridrichMethod.
 
+"""Legacy calculator implementation for testing purposes."""
+
+import builtins
 import io
 
-from sympy import *
+from sympy import diff, latex, simplify, sqrt, symbols, sympify
 
 
-def run_legacy_calculator(
+def run_legacy_calculator(  # noqa: C901
     equation: list[str],
     variables: list[tuple[str, str]],
     digits: dict[str, int],
@@ -14,15 +17,14 @@ def run_legacy_calculator(
     insert: bool,
     include_equation_number: bool,
 ):
+    """Run the legacy calculator logic."""
     output_buffer = io.StringIO()
 
-    def print(*args, **kwargs):
+    def _print(*args, **kwargs):
         kwargs["file"] = output_buffer
         kwargs["sep"] = kwargs.get("sep", " ")
         kwargs["end"] = kwargs.get("end", "\n")
         builtins.print(*args, **kwargs)
-
-    import builtins
 
     # Parse
 
@@ -88,40 +90,40 @@ def run_legacy_calculator(
 
     if insert:
         if not separate:
-            print(
+            _print(
                 """\\begin{equation}
 \\begin{aligned}"""
                 if include_equation_number
                 else """\\begin{equation*}
 \\begin{aligned}"""
             )
-            print(equation_left, end="&=")
-            print(latex_symbol(equation_right), end="=")
-            print(latex_value(equation_right), end="=")
+            _print(equation_left, end="&=")
+            _print(latex_symbol(equation_right), end="=")
+            _print(latex_value(equation_right), end="=")
             result_mu = latex_number(equation_right.evalf(digits["mu"], subs=output_number))
             if last_unit == 1:
-                print(result_mu + "\\\\\n\\\\")
+                _print(result_mu + "\\\\\n\\\\")
             else:
-                print(f"{result_mu}\\ " + last_unit + "\\\\\n\\\\")
+                _print(f"{result_mu}\\ " + last_unit + "\\\\\n\\\\")
 
             pdv_number = []
             for sym in syms:
                 if check_unc[sym]:
-                    print(
+                    _print(
                         f"\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }}",
                         end="&=",
                     )
                     pdv = simplify(diff(equation_right, sym))
-                    print(latex_symbol(pdv), end="=")
-                    print(latex_value(pdv), end="=")
+                    _print(latex_symbol(pdv), end="=")
+                    _print(latex_value(pdv), end="=")
                     num = pdv.subs(output_number)
                     pdv_number.append(num)
-                    print(latex_number(num.evalf(2)), end="\\\\\n")
+                    _print(latex_number(num.evalf(2)), end="\\\\\n")
                 else:
                     pdv_number.append(sympify(0))
-            print("\\\\")
+            _print("\\\\")
 
-            print(
+            _print(
                 f"\\sigma_{{{equation_left}}}&=\\sqrt{{"
                 + "+".join(
                     f"\\left(\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }} {fullunc}\\right)^2"
@@ -130,7 +132,7 @@ def run_legacy_calculator(
                 )
                 + "}\\\\"
             )
-            print(
+            _print(
                 "&=\\sqrt{"
                 + "+".join(
                     f"\\left({latex_number(num.evalf(2))} \\times {output_value[unc]}\\right)^2"
@@ -139,7 +141,7 @@ def run_legacy_calculator(
                 )
                 + "}\\\\"
             )
-            print(
+            _print(
                 "&=\\sqrt{"
                 + "+".join(
                     f"\\left({latex_number((num * sympify(output_number[unc])).evalf(2))}\\right)^2"
@@ -153,22 +155,22 @@ def run_legacy_calculator(
                     sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))
                 ).evalf(digits["sigma"])
             )
-            print("&=", end="")
+            _print("&=", end="")
             if last_unit == 1:
-                print(result_sigma + "\\\\\n\\\\")
+                _print(result_sigma + "\\\\\n\\\\")
             else:
-                print(f"{result_sigma}\\ " + last_unit + "\\\\\n\\\\")
+                _print(f"{result_sigma}\\ " + last_unit + "\\\\\n\\\\")
 
             # Result
 
             if last_unit == 1:
-                print(f"{equation_left}&={result_mu} \\pm {result_sigma}")
+                _print(f"{equation_left}&={result_mu} \\pm {result_sigma}")
             else:
-                print(
+                _print(
                     f"{equation_left}&=\\left ({result_mu} \\pm {result_sigma} \\right )\\ "
                     + last_unit
                 )
-            print(
+            _print(
                 """\\end{aligned}
 \\end{equation}"""
                 if include_equation_number
@@ -177,19 +179,19 @@ def run_legacy_calculator(
             )
 
         else:
-            print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
-            print(equation_left, end="=")
-            print(latex_symbol(equation_right), end="=")
-            print(latex_value(equation_right), end="=")
+            _print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
+            _print(equation_left, end="=")
+            _print(latex_symbol(equation_right), end="=")
+            _print(latex_value(equation_right), end="=")
             result_mu = latex_number(equation_right.evalf(digits["mu"], subs=output_number))
             if last_unit == 1:
-                print(result_mu)
+                _print(result_mu)
             else:
-                print(f"{result_mu}\\ " + last_unit)
-            print("\\end{equation}" if include_equation_number else "\\end{equation*}")
+                _print(f"{result_mu}\\ " + last_unit)
+            _print("\\end{equation}" if include_equation_number else "\\end{equation*}")
 
             pdv_number = []
-            print(
+            _print(
                 """
 \\begin{equation}
 \\begin{aligned}"""
@@ -200,19 +202,19 @@ def run_legacy_calculator(
             )
             for sym in syms:
                 if check_unc[sym]:
-                    print(
+                    _print(
                         f"\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }}",
                         end="&=",
                     )
                     pdv = simplify(diff(equation_right, sym))
-                    print(latex_symbol(pdv), end="=")
-                    print(latex_value(pdv), end="=")
+                    _print(latex_symbol(pdv), end="=")
+                    _print(latex_value(pdv), end="=")
                     num = pdv.subs(output_number)
                     pdv_number.append(num)
-                    print(latex_number(num.evalf(2)), end="\\\\\n")
+                    _print(latex_number(num.evalf(2)), end="\\\\\n")
                 else:
                     pdv_number.append(sympify(0))
-            print(
+            _print(
                 """\\end{aligned}
 \\end{equation}
 """
@@ -222,14 +224,14 @@ def run_legacy_calculator(
 """
             )
 
-            print(
+            _print(
                 """\\begin{equation}
 \\begin{aligned}"""
                 if include_equation_number
                 else """\\begin{equation*}
 \\begin{aligned}"""
             )
-            print(
+            _print(
                 f"\\sigma_{{{equation_left}}}&=\\sqrt{{"
                 + "+".join(
                     f"\\left(\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }} {fullunc}\\right)^2"
@@ -238,7 +240,7 @@ def run_legacy_calculator(
                 )
                 + "}\\\\"
             )
-            print(
+            _print(
                 "&=\\sqrt{"
                 + "+".join(
                     f"\\left({latex_number(num.evalf(2))} \\times {output_value[unc]}\\right)^2"
@@ -247,7 +249,7 @@ def run_legacy_calculator(
                 )
                 + "}\\\\"
             )
-            print(
+            _print(
                 "&=\\sqrt{"
                 + "+".join(
                     f"\\left({latex_number((num * sympify(output_number[unc])).evalf(2))}\\right)^2"
@@ -261,12 +263,12 @@ def run_legacy_calculator(
                     sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))
                 ).evalf(digits["sigma"])
             )
-            print("&=", end="")
+            _print("&=", end="")
             if last_unit == 1:
-                print(result_sigma)
+                _print(result_sigma)
             else:
-                print(f"{result_sigma}\\ " + last_unit)
-            print(
+                _print(f"{result_sigma}\\ " + last_unit)
+            _print(
                 """\\end{aligned}
 \\end{equation}
 """
@@ -278,49 +280,49 @@ def run_legacy_calculator(
 
             # Result
 
-            print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
+            _print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
             if last_unit == 1:
-                print(f"{equation_left}={result_mu} \\pm {result_sigma}")
+                _print(f"{equation_left}={result_mu} \\pm {result_sigma}")
             else:
-                print(
+                _print(
                     f"{equation_left}=\\left ({result_mu} \\pm {result_sigma} \\right )\\ "
                     + last_unit
                 )
-            print("\\end{equation}" if include_equation_number else "\\end{equation}*")
+            _print("\\end{equation}" if include_equation_number else "\\end{equation*}")
 
     elif not separate:
-        print(
+        _print(
             """\\begin{equation}
 \\begin{aligned}"""
             if include_equation_number
             else """\\begin{equation*}
 \\begin{aligned}"""
         )
-        print(equation_left, end="&=")
-        print(latex_symbol(equation_right), end="=")
+        _print(equation_left, end="&=")
+        _print(latex_symbol(equation_right), end="=")
         result_mu = latex_number(equation_right.evalf(digits["mu"], subs=output_number))
         if last_unit == 1:
-            print(result_mu + "\\\\\n\\\\")
+            _print(result_mu + "\\\\\n\\\\")
         else:
-            print(f"{result_mu}\\ " + last_unit + "\\\\\n\\\\")
+            _print(f"{result_mu}\\ " + last_unit + "\\\\\n\\\\")
 
         pdv_number = []
         for sym in syms:
             if check_unc[sym]:
-                print(
+                _print(
                     f"\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }}",
                     end="&=",
                 )
                 pdv = simplify(diff(equation_right, sym))
-                print(latex_symbol(pdv), end="=")
+                _print(latex_symbol(pdv), end="=")
                 num = pdv.subs(output_number)
                 pdv_number.append(num)
-                print(latex_number(num.evalf(2)), end="\\\\\n")
+                _print(latex_number(num.evalf(2)), end="\\\\\n")
             else:
                 pdv_number.append(sympify(0))
-        print("\\\\")
+        _print("\\\\")
 
-        print(
+        _print(
             f"\\sigma_{{{equation_left}}}&=\\sqrt{{"
             + "+".join(
                 f"\\left(\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }} {fullunc}\\right)^2"
@@ -329,7 +331,7 @@ def run_legacy_calculator(
             )
             + "}\\\\"
         )
-        print(
+        _print(
             "&=\\sqrt{"
             + "+".join(
                 f"\\left({latex_number((num * sympify(output_number[unc])).evalf(2))}\\right)^2"
@@ -343,21 +345,21 @@ def run_legacy_calculator(
                 sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))
             ).evalf(digits["sigma"])
         )
-        print("&=", end="")
+        _print("&=", end="")
         if last_unit == 1:
-            print(result_sigma + "\\\\\n\\\\")
+            _print(result_sigma + "\\\\\n\\\\")
         else:
-            print(f"{result_sigma}\\ " + last_unit + "\\\\\n\\\\")
+            _print(f"{result_sigma}\\ " + last_unit + "\\\\\n\\\\")
 
         # Result
 
         if last_unit == 1:
-            print(f"{equation_left}&={result_mu} \\pm {result_sigma}")
+            _print(f"{equation_left}&={result_mu} \\pm {result_sigma}")
         else:
-            print(
+            _print(
                 f"{equation_left}&=\\left ({result_mu} \\pm {result_sigma} \\right )\\ " + last_unit
             )
-        print(
+        _print(
             """\\end{aligned}
 \\end{equation}"""
             if include_equation_number
@@ -366,18 +368,18 @@ def run_legacy_calculator(
         )
 
     else:
-        print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
-        print(equation_left, end="=")
-        print(latex_symbol(equation_right), end="=")
+        _print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
+        _print(equation_left, end="=")
+        _print(latex_symbol(equation_right), end="=")
         result_mu = latex_number(equation_right.evalf(digits["mu"], subs=output_number))
         if last_unit == 1:
-            print(result_mu)
+            _print(result_mu)
         else:
-            print(f"{result_mu}\\ " + last_unit)
-        print("\\end{equation}" if include_equation_number else "\\end{equation*}")
+            _print(f"{result_mu}\\ " + last_unit)
+        _print("\\end{equation}" if include_equation_number else "\\end{equation*}")
 
         pdv_number = []
-        print(
+        _print(
             """
 \\begin{equation}
 \\begin{aligned}"""
@@ -388,18 +390,18 @@ def run_legacy_calculator(
         )
         for sym in syms:
             if check_unc[sym]:
-                print(
+                _print(
                     f"\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }}",
                     end="&=",
                 )
                 pdv = simplify(diff(equation_right, sym))
-                print(latex_symbol(pdv), end="=")
+                _print(latex_symbol(pdv), end="=")
                 num = pdv.subs(output_number)
                 pdv_number.append(num)
-                print(latex_number(num.evalf(2)), end="\\\\\n")
+                _print(latex_number(num.evalf(2)), end="\\\\\n")
             else:
                 pdv_number.append(sympify(0))
-        print(
+        _print(
             """\\end{aligned}
 \\end{equation}
 """
@@ -409,14 +411,14 @@ def run_legacy_calculator(
 """
         )
 
-        print(
+        _print(
             """\\begin{equation}
 \\begin{aligned}"""
             if include_equation_number
             else """\\begin{equation*}
 \\begin{aligned}"""
         )
-        print(
+        _print(
             f"\\sigma_{{{equation_left}}}&=\\sqrt{{"
             + "+".join(
                 f"\\left(\\frac{{\\partial {equation_left} }}{{\\partial {output_symbol[sym]} }} {fullunc}\\right)^2"
@@ -425,7 +427,7 @@ def run_legacy_calculator(
             )
             + "}\\\\"
         )
-        print(
+        _print(
             "&=\\sqrt{"
             + "+".join(
                 f"\\left({latex_number((num * sympify(output_number[unc])).evalf(2))}\\right)^2"
@@ -439,12 +441,12 @@ def run_legacy_calculator(
                 sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))
             ).evalf(digits["sigma"])
         )
-        print("&=", end="")
+        _print("&=", end="")
         if last_unit == 1:
-            print(result_sigma)
+            _print(result_sigma)
         else:
-            print(f"{result_sigma}\\ " + last_unit)
-        print(
+            _print(f"{result_sigma}\\ " + last_unit)
+        _print(
             """\\end{aligned}
 \\end{equation}
 """
@@ -456,13 +458,13 @@ def run_legacy_calculator(
 
         # Result
 
-        print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
+        _print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
         if last_unit == 1:
-            print(f"{equation_left}={result_mu} \\pm {result_sigma}")
+            _print(f"{equation_left}={result_mu} \\pm {result_sigma}")
         else:
-            print(
+            _print(
                 f"{equation_left}=\\left ({result_mu} \\pm {result_sigma} \\right )\\ " + last_unit
             )
-        print("\\end{equation}" if include_equation_number else "\\end{equation*}")
+        _print("\\end{equation}" if include_equation_number else "\\end{equation*}")
 
     return output_buffer.getvalue()
