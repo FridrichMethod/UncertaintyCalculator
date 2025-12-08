@@ -25,6 +25,7 @@ dev = [
   "pytest-timeout",
   "pytest-xdist",
   "ruff",
+  "mypy",
 ]
 
 [tool.ruff]
@@ -120,6 +121,7 @@ builtins-ignorelist = []
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 "*.ipynb" = ["F401", "RUF059"]
+"tests/legacy_calculator.py" = ["ALL"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -142,6 +144,10 @@ disable_error_code = ["import-not-found", "import-untyped", "no-any-return"]
 [[tool.mypy.overrides]]
 module = ["uncertainty_calculator.*", "sympy.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.legacy_calculator"
+ignore_errors = true
 
 [tool.setuptools]
 include-package-data = true
