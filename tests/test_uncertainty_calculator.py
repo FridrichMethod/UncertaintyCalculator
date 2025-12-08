@@ -57,7 +57,7 @@ test_cases = [
 @pytest.mark.parametrize("case_name, equation, variables", test_cases)
 @pytest.mark.parametrize("digits_mu", [3, 4])
 @pytest.mark.parametrize("digits_sigma", [2, 3])
-@pytest.mark.parametrize("last_unit", [r"\si{V}", "", 1])
+@pytest.mark.parametrize("last_unit", [r"\text{V}", "", 1])
 @pytest.mark.parametrize("separate", [True, False])
 @pytest.mark.parametrize("insert", [True, False])
 @pytest.mark.parametrize("include_equation_number", [True, False])
