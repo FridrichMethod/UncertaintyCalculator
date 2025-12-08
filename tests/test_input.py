@@ -3,7 +3,7 @@
 import pytest
 
 from tests.input_parsers import parse_equation, parse_variables
-from uncertainty_calculator.core import Digits, Equation, UncertaintyCalculator, Variable
+from uncertainty_calculator import Digits, Equation, UncertaintyCalculator, Variable
 
 
 def test_variable_dataclass_input():
