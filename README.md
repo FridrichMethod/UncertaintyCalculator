@@ -18,14 +18,12 @@ A Python tool for automated error propagation in physical experiments. This calc
 - Python 3.12+
 - `sympy`
 
-### Install via pip
+### Install via uv
 
 ```shell
-conda create -n uncertainty-calculator python=3.12 -y
-conda activate uncertainty-calculator
-
-pip install uv
-uv pip install -e .
+uv venv --python 3.12
+source .venv/bin/activate
+uv pip install -e .[dev]
 ```
 
 ## Usage
@@ -103,6 +101,8 @@ calculator = UncertaintyCalculator(
 )
 
 latex_string = calculator.run()
+
+print(latex_string)
 ```
 
 ### 5. Render the LaTeX String
@@ -120,7 +120,7 @@ The tool generates LaTeX code that renders to standard physical chemistry calcul
 ```latex
 \begin{equation}
 \begin{aligned}
-\zeta&=\frac{K \eta l u}{4 \varepsilon_0 \varepsilon_\text{r} \varphi}=0.111\ \textrm{V}\\
+\zeta&=\frac{K \eta l u}{4 \varepsilon_0 \varepsilon_\text{r} \varphi}=0.111\ \text{V}\\
 \\
 \frac{\partial \zeta }{\partial \eta }&=\frac{K l u}{4 \varepsilon_0 \varepsilon_\text{r} \varphi}=1.2 \times 10^{2}\\
 \frac{\partial \zeta }{\partial u }&=\frac{K \eta l}{4 \varepsilon_0 \varepsilon_\text{r} \varphi}=3.0 \times 10^{3}\\
@@ -130,9 +130,9 @@ The tool generates LaTeX code that renders to standard physical chemistry calcul
 \\
 \sigma_{\zeta}&=\sqrt{\left(\frac{\partial \zeta }{\partial \eta } \sigma_{\eta}\right)^2+\left(\frac{\partial \zeta }{\partial u } \sigma_{u}\right)^2+\left(\frac{\partial \zeta }{\partial l } \sigma_{l}\right)^2+\left(\frac{\partial \zeta }{\partial \varphi } \sigma_{\varphi}\right)^2+\left(\frac{\partial \zeta }{\partial \varepsilon_\text{r} } \sigma_{\varepsilon_\text{r}}\right)^2}\\
 &=\sqrt{\left(0.0069\right)^2+\left(0.0033\right)^2+\left(0.00094\right)^2+\left(-0.00064\right)^2+\left(-8.2 \times 10^{-5}\right)^2}\\
-&=0.00773\ \textrm{V}\\
+&=0.00773\ \text{V}\\
 \\
-\zeta&=\left (0.111 \pm 0.00773 \right )\ \textrm{V}
+\zeta&=\left (0.111 \pm 0.00773 \right )\ \text{V}
 \end{aligned}
 \end{equation}
 ```
