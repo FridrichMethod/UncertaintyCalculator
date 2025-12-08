@@ -38,30 +38,33 @@ The calculator is designed to be used as a Python module. Below is a complete ex
 
 ### 1. Define the Equation
 
-The equation is defined as a list of strings containing the left-hand side (variable name) and the right-hand side (expression).
+The equation can be defined using the `Equation` class.
 
 ```python
+from uncertainty_calculator import Equation
+
 # Define equation
-equation = [r"\zeta", r"(K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)"]
+equation = Equation(lhs=r"\zeta", rhs=r"(K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)")
 ```
 
 ### 2. Define Variables
 
-Variables are defined as a list of tuples. Each tuple contains:
-
-1. A string defining the variable's value and uncertainty (`symbol = value +- uncertainty`).
-2. The LaTeX representation of the variable symbol.
+Variables can be defined using the `Variable` class for structured input.
 
 ```python
+from uncertainty_calculator import Variable
+
 # Define variables
 variables = [
-    ("K = 4 +- 0", r"K"),
-    ("eta = 0.9358e-3 +- 0.0001/sqrt(3)", r"\eta"),
-    ("u = 3.68e-5 +- 0.11e-5", r"u"),
-    ("l = 0.2256 +- 0.0019", r"l"),
-    ("phi = 100 +- 1/sqrt(3)", r"\varphi"),
-    ("e_0 = 8.8541878128e-12 +- 0", r"\varepsilon_0"),
-    ("e_r = 78.7 +- 0.1/sqrt(3)", r"\varepsilon_\text{r}"),
+    Variable(name="K", value="4", uncertainty="0", latex_name="K"),
+    Variable(name="eta", value="0.9358e-3", uncertainty="0.0001/sqrt(3)", latex_name=r"\eta"),
+    Variable(name="u", value="3.68e-5", uncertainty="0.11e-5", latex_name="u"),
+    Variable(name="l", value="0.2256", uncertainty="0.0019", latex_name="l"),
+    Variable(name="phi", value="100", uncertainty="1/sqrt(3)", latex_name=r"\varphi"),
+    Variable(name="e_0", value="8.8541878128e-12", uncertainty="0", latex_name=r"\varepsilon_0"),
+    Variable(
+        name="e_r", value="78.7", uncertainty="0.1/sqrt(3)", latex_name=r"\varepsilon_\text{r}"
+    ),
 ]
 ```
 
@@ -70,14 +73,14 @@ variables = [
 Configure the output format, precision, and units.
 
 ```python
+from uncertainty_calculator import Digits
+
 # Set digits of results
-digits = {
-    "mu": 3,
-    "sigma": 3,
-}
+digits = Digits(mu=3, sigma=3)
 
 # Set units of results
-last_unit = r"\text{V}"
+last_unit = r"\text{V}"  # Use None if dimensionless
+# last_unit = None
 
 # Print separately or integrally
 separate = False

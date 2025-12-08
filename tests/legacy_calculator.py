@@ -5,14 +5,17 @@
 import builtins
 import io
 
+from collections.abc import Iterable, Sequence
+
 from sympy import diff, latex, simplify, sqrt, symbols, sympify
+from uncertainty_calculator import Digits, LastUnit
 
 
 def run_legacy_calculator(  # noqa: C901
-    equation: list[str],
-    variables: list[tuple[str, str]],
-    digits: dict[str, int],
-    last_unit: str | int,
+    equation: Sequence[str],
+    variables: Iterable[tuple[str, str]],
+    digits: Digits,
+    last_unit: LastUnit,
     separate: bool,
     insert: bool,
     include_equation_number: bool,
@@ -100,8 +103,8 @@ def run_legacy_calculator(  # noqa: C901
             _print(equation_left, end="&=")
             _print(latex_symbol(equation_right), end="=")
             _print(latex_value(equation_right), end="=")
-            result_mu = latex_number(equation_right.evalf(digits["mu"], subs=output_number))
-            if last_unit == 1:
+            result_mu = latex_number(equation_right.evalf(digits.mu, subs=output_number))
+            if last_unit is None:
                 _print(result_mu + "\\\\\n\\\\")
             else:
                 _print(f"{result_mu}\\ " + last_unit + "\\\\\n\\\\")
@@ -153,17 +156,17 @@ def run_legacy_calculator(  # noqa: C901
             result_sigma = latex_number(
                 sqrt(
                     sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))
-                ).evalf(digits["sigma"])
+                ).evalf(digits.sigma)
             )
             _print("&=", end="")
-            if last_unit == 1:
+            if last_unit is None:
                 _print(result_sigma + "\\\\\n\\\\")
             else:
                 _print(f"{result_sigma}\\ " + last_unit + "\\\\\n\\\\")
 
             # Result
 
-            if last_unit == 1:
+            if last_unit is None:
                 _print(f"{equation_left}&={result_mu} \\pm {result_sigma}")
             else:
                 _print(
@@ -183,8 +186,8 @@ def run_legacy_calculator(  # noqa: C901
             _print(equation_left, end="=")
             _print(latex_symbol(equation_right), end="=")
             _print(latex_value(equation_right), end="=")
-            result_mu = latex_number(equation_right.evalf(digits["mu"], subs=output_number))
-            if last_unit == 1:
+            result_mu = latex_number(equation_right.evalf(digits.mu, subs=output_number))
+            if last_unit is None:
                 _print(result_mu)
             else:
                 _print(f"{result_mu}\\ " + last_unit)
@@ -261,10 +264,10 @@ def run_legacy_calculator(  # noqa: C901
             result_sigma = latex_number(
                 sqrt(
                     sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))
-                ).evalf(digits["sigma"])
+                ).evalf(digits.sigma)
             )
             _print("&=", end="")
-            if last_unit == 1:
+            if last_unit is None:
                 _print(result_sigma)
             else:
                 _print(f"{result_sigma}\\ " + last_unit)
@@ -281,7 +284,7 @@ def run_legacy_calculator(  # noqa: C901
             # Result
 
             _print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
-            if last_unit == 1:
+            if last_unit is None:
                 _print(f"{equation_left}={result_mu} \\pm {result_sigma}")
             else:
                 _print(
@@ -300,8 +303,8 @@ def run_legacy_calculator(  # noqa: C901
         )
         _print(equation_left, end="&=")
         _print(latex_symbol(equation_right), end="=")
-        result_mu = latex_number(equation_right.evalf(digits["mu"], subs=output_number))
-        if last_unit == 1:
+        result_mu = latex_number(equation_right.evalf(digits.mu, subs=output_number))
+        if last_unit is None:
             _print(result_mu + "\\\\\n\\\\")
         else:
             _print(f"{result_mu}\\ " + last_unit + "\\\\\n\\\\")
@@ -343,17 +346,17 @@ def run_legacy_calculator(  # noqa: C901
         result_sigma = latex_number(
             sqrt(
                 sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))
-            ).evalf(digits["sigma"])
+            ).evalf(digits.sigma)
         )
         _print("&=", end="")
-        if last_unit == 1:
+        if last_unit is None:
             _print(result_sigma + "\\\\\n\\\\")
         else:
             _print(f"{result_sigma}\\ " + last_unit + "\\\\\n\\\\")
 
         # Result
 
-        if last_unit == 1:
+        if last_unit is None:
             _print(f"{equation_left}&={result_mu} \\pm {result_sigma}")
         else:
             _print(
@@ -371,8 +374,8 @@ def run_legacy_calculator(  # noqa: C901
         _print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
         _print(equation_left, end="=")
         _print(latex_symbol(equation_right), end="=")
-        result_mu = latex_number(equation_right.evalf(digits["mu"], subs=output_number))
-        if last_unit == 1:
+        result_mu = latex_number(equation_right.evalf(digits.mu, subs=output_number))
+        if last_unit is None:
             _print(result_mu)
         else:
             _print(f"{result_mu}\\ " + last_unit)
@@ -439,10 +442,10 @@ def run_legacy_calculator(  # noqa: C901
         result_sigma = latex_number(
             sqrt(
                 sum((num * sympify(sigma)) ** 2 for num, sigma in zip(pdv_number, input_sigma))
-            ).evalf(digits["sigma"])
+            ).evalf(digits.sigma)
         )
         _print("&=", end="")
-        if last_unit == 1:
+        if last_unit is None:
             _print(result_sigma)
         else:
             _print(f"{result_sigma}\\ " + last_unit)
@@ -459,7 +462,7 @@ def run_legacy_calculator(  # noqa: C901
         # Result
 
         _print("\\begin{equation}" if include_equation_number else "\\begin{equation*}")
-        if last_unit == 1:
+        if last_unit is None:
             _print(f"{equation_left}={result_mu} \\pm {result_sigma}")
         else:
             _print(

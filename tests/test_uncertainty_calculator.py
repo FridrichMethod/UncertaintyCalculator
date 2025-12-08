@@ -2,8 +2,9 @@
 
 import pytest
 
+from tests.input_parsers import parse_equation, parse_variables
 from tests.legacy_calculator import run_legacy_calculator
-from uncertainty_calculator import UncertaintyCalculator
+from uncertainty_calculator import Digits, UncertaintyCalculator
 
 # Default test case data
 default_equation = [x.strip() for x in [r"\zeta ", r" (K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)"]]
@@ -55,9 +56,8 @@ test_cases = [
 
 
 @pytest.mark.parametrize("case_name, equation, variables", test_cases)
-@pytest.mark.parametrize("digits_mu", [3, 4])
-@pytest.mark.parametrize("digits_sigma", [2, 3])
-@pytest.mark.parametrize("last_unit", [r"\text{V}", "", 1])
+@pytest.mark.parametrize("digits", [Digits(mu=3, sigma=2), Digits(mu=4, sigma=3)])
+@pytest.mark.parametrize("last_unit", [r"\text{V}", "", None])
 @pytest.mark.parametrize("separate", [True, False])
 @pytest.mark.parametrize("insert", [True, False])
 @pytest.mark.parametrize("include_equation_number", [True, False])
@@ -65,8 +65,7 @@ def test_calculator_output_matches_legacy(
     case_name,
     equation,
     variables,
-    digits_mu,
-    digits_sigma,
+    digits,
     last_unit,
     separate,
     insert,
@@ -75,13 +74,8 @@ def test_calculator_output_matches_legacy(
     """Test that the refactored calculator matches the legacy implementation."""
     print(f"Running test case: {case_name}")
 
-    # Prepare inputs
-    digits = {
-        "mu": digits_mu,
-        "sigma": digits_sigma,
-    }
-
     # Run Legacy (Oracle) with injected equation/variables
+    # Keep legacy format for legacy calculator
     expected_output = run_legacy_calculator(
         equation=equation,
         variables=variables,
@@ -92,10 +86,14 @@ def test_calculator_output_matches_legacy(
         include_equation_number=include_equation_number,
     )
 
+    # Convert inputs to new format for new calculator
+    new_equation = parse_equation(equation)
+    new_variables = parse_variables(variables)
+
     # Run Refactored
     calculator = UncertaintyCalculator(
-        equation=equation,
-        variables=variables,
+        equation=new_equation,
+        variables=new_variables,
         digits=digits,
         last_unit=last_unit,
         separate=separate,

@@ -1,15 +1,56 @@
 """Core module for Uncertainty Calculator."""
 
 import io
+from collections.abc import Iterable
+from dataclasses import dataclass
 from typing import Any
 
 from sympy import Symbol, diff, latex, simplify, sqrt, symbols, sympify
 
+
+@dataclass
+class Equation:
+    """An equation definition for the uncertainty calculator.
+
+    Attributes:
+        lhs: The left-hand side of the equation (variable name).
+        rhs: The right-hand side of the equation (expression).
+
+    """
+
+    lhs: str
+    rhs: str
+
+
+@dataclass
+class Variable:
+    r"""A variable definition for the uncertainty calculator.
+
+    Attributes:
+        name: The variable symbol used in the equation (e.g., "K").
+        value: The value of the variable. Can be a number or a string expression (e.g., "4", "1/sqrt(3)").
+        uncertainty: The uncertainty of the variable. Can be a number or string expression.
+        latex_name: The LaTeX representation of the variable (e.g., r"\eta").
+
+    """
+
+    name: str
+    value: str | float
+    uncertainty: str | float
+    latex_name: str
+
+
+@dataclass
+class Digits:
+    """Digits configuration for result rounding."""
+
+    mu: int
+    sigma: int
+
+
 # Type definitions matching Python 3.12 style
-type Equation = list[str]
-type Variables = list[tuple[str, str]]
-type Digits = dict[str, int]
-type LastUnit = str | int
+type Variables = Iterable[Variable]
+type LastUnit = str | None
 
 
 class UncertaintyCalculator:
@@ -33,10 +74,10 @@ class UncertaintyCalculator:
         """Initialize the UncertaintyCalculator.
 
         Args:
-            equation: A list containing the LHS and RHS of the equation as strings.
-            variables: A list of tuples defining variables and their LaTeX representations.
+            equation: An Equation object.
+            variables: A list of Variable objects.
             digits: A dictionary specifying decimal places for 'mu' and 'sigma'.
-            last_unit: The unit string or 1 if dimensionless.
+            last_unit: The unit string or None if dimensionless.
             separate: If True, prints calculation steps in separate equation blocks.
             insert: If True, includes an intermediate step showing values plugged into the formula.
             include_equation_number: If True, uses numbered 'equation' environments; otherwise 'equation*'.
@@ -74,6 +115,7 @@ class UncertaintyCalculator:
         """Execute the calculation and return the formatted LaTeX string."""
         self._buffer = io.StringIO()
         self._parse_inputs()
+        self._validate_inputs()
         self._compute_derivatives_and_results()
 
         if not self.separate:
@@ -130,13 +172,11 @@ class UncertaintyCalculator:
         input_fullmu: list[str] = []
         input_fullsigma: list[str] = []
 
-        for var_def, latex_repr in self.variables:
-            # Format: "K = 4 +- 0"
-            parts = var_def.split("=")
-            sym_str = parts[0].strip()
-            value_parts = parts[1].split("+-")
-            val_mu_str = value_parts[0].strip()
-            val_sigma_str = value_parts[1].strip()
+        for var_item in self.variables:
+            sym_str = var_item.name
+            val_mu_str = str(var_item.value)
+            val_sigma_str = str(var_item.uncertainty)
+            latex_repr = var_item.latex_name
 
             input_sym.append(sym_str)
             input_unc.append(f"sigma_{sym_str}")
@@ -162,8 +202,36 @@ class UncertaintyCalculator:
         self.output_value = dict(zip(self.syms + self.uncs, input_fullmu + input_fullsigma))
         self.check_unc = dict(zip(self.syms, sympify(self.input_sigma)))
 
-        self.equation_left = self.equation[0]
-        self.equation_right = sympify(self.equation[1])
+        self.equation_left = self.equation.lhs
+        self.equation_right = sympify(self.equation.rhs)
+
+    def _validate_inputs(self) -> None:
+        """Validate that all symbols in the equation are defined in variables."""
+        # Get all free symbols in the equation right-hand side
+        free_symbols = self.equation_right.free_symbols
+
+        # Check if all free symbols are in our defined symbols
+        # Note: free_symbols contains SymPy Symbol objects
+        # self.syms contains SymPy Symbol objects for our variables
+
+        defined_symbols = set(self.syms)
+
+        for sym in free_symbols:
+            # Some constants like pi might be in free_symbols if not handled,
+            # but usually sympy handles pi as a number.
+            # However, if user uses 'pi' string in equation but it's a symbol?
+            # sympy.pi is not a Symbol, it's a Number.
+            if sym not in defined_symbols:
+                # It might be a reserved symbol or something else.
+                # But for our calculator, we expect variables to be defined.
+                # Let's double check if it's not something like 'e' or 'pi' that sympy auto-converts
+                # but might appear as symbol if not properly handled?
+                # Actually, if the user writes "pi" and it's not defined, sympy might treat it as Symbol("pi").
+                # Unless we sympify with locals?
+
+                # We can't easily distinguish "valid unknown symbol" from "missing variable".
+                # But strict validation is good.
+                raise ValueError(f"Symbol '{sym}' used in equation but not defined in variables.")
 
     def _compute_derivatives_and_results(self) -> None:
         """Compute partial derivatives and final mu/sigma values."""
@@ -178,7 +246,7 @@ class UncertaintyCalculator:
 
         # Calculate Mu (Mean)
         self.result_mu = self._latex_number(
-            self.equation_right.evalf(self.digits["mu"], subs=self.output_number)  # type: ignore
+            self.equation_right.evalf(self.digits.mu, subs=self.output_number)  # type: ignore
         )
 
         # Calculate Sigma (Uncertainty)
@@ -190,7 +258,7 @@ class UncertaintyCalculator:
             for num, sigma in zip(pdv_nums, self.input_sigma)  # type: ignore
         )
         self.result_sigma = self._latex_number(
-            sqrt(sum_squares).evalf(self.digits["sigma"])  # type: ignore
+            sqrt(sum_squares).evalf(self.digits.sigma)  # type: ignore
         )
 
     def _print_env_start(self, aligned: bool = False) -> None:
@@ -259,7 +327,9 @@ class UncertaintyCalculator:
             self._print(self._latex_value(self.equation_right), end="=")
 
         # Format result string with unit
-        res_str = self.result_mu if self.last_unit == 1 else f"{self.result_mu}\\ {self.last_unit}"
+        res_str = (
+            self.result_mu if self.last_unit is None else f"{self.result_mu}\\ {self.last_unit}"
+        )
 
         if aligned:
             # In combined mode, include extra newlines for spacing
@@ -332,7 +402,7 @@ class UncertaintyCalculator:
         # 4. Final Sigma Result
         self._print("&=", end="")
 
-        if self.last_unit == 1:
+        if self.last_unit is None:
             res_str = self.result_sigma
         else:
             res_str = f"{self.result_sigma}\\ {self.last_unit}"
@@ -348,7 +418,7 @@ class UncertaintyCalculator:
         """Render the final result line with +/- uncertainty."""
         separator = "&=" if aligned else "="
 
-        if self.last_unit == 1:
+        if self.last_unit is None:
             self._print(f"{self.equation_left}{separator}{self.result_mu} \\pm {self.result_sigma}")
         else:
             self._print(
