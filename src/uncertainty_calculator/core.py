@@ -245,7 +245,7 @@ class UncertaintyCalculator:
         # When separate=True, insert=True, and include_equation_number=False,
         # the legacy code outputted "\end{equation}*" instead of "\end{equation*}"
         if self.insert and not self.include_equation_number:
-            self._print("\\end{equation}*")
+            self._print("\\end{equation*}")
         else:
             self._print_env_end(aligned=False)
 
