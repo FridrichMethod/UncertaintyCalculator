@@ -2,6 +2,14 @@
 
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3120/) [![CI Status](https://github.com/fridrichmethod/UncertaintyCalculator/workflows/CI/badge.svg)](https://github.com/fridrichmethod/UncertaintyCalculator/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FridrichMethod/UncertaintyCalculator/blob/main/calculator.ipynb)
 
+<div align="center" style="margin: 2em 0;">
+  <div style="background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 1.5em; max-width: 600px;">
+    <p style="margin: 0; font-size: 1.1em; color: #24292f; line-height: 1.6; font-style: italic;">
+      "Help you get rid of the <strong>Physical Chemistry Experiment</strong> course in CCME at PKU!"
+    </p>
+  </div>
+</div>
+
 A Python tool for automated error propagation in physical experiments. This calculator uses symbolic differentiation to compute partial derivatives and propagate uncertainties, generating detailed LaTeX output for your reports.
 
 ## Features
