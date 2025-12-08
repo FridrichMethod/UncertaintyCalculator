@@ -198,13 +198,13 @@ class UncertaintyCalculator:
         suffix = "" if self.include_equation_number else "*"
         self._print(f"\\begin{{equation{suffix}}}")
         if aligned:
-            self._print("\\begin{aligned}")
+            self._print("\\begin{aligned}")  # noqa: RUF027
 
     def _print_env_end(self, aligned: bool = False) -> None:
         """Print the end of an equation environment."""
         suffix = "" if self.include_equation_number else "*"
         if aligned:
-            self._print("\\end{aligned}")
+            self._print("\\end{aligned}")  # noqa: RUF027
         self._print(f"\\end{{equation{suffix}}}")
 
     def _render_combined(self) -> None:
