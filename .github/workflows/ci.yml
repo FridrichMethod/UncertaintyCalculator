@@ -38,4 +38,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          pytest
+          pytest -n $(nproc || echo 1) --dist=loadscope \
+            --cov=uncertainty_calculator --cov-report=xml --cov-report=html \
+            --html=tests/report.html \
+            tests/
