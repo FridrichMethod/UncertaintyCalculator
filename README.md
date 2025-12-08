@@ -1,7 +1,6 @@
 # Uncertainty Calculator
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python Versions](https://img.shields.io/badge/Python-3.12+-blue.svg?logo=python&logoColor=white)](https://python.org/downloads)
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12+-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3120/) [![CI Status](https://github.com/fridrichmethod/UncertaintyCalculator/workflows/CI/badge.svg)](https://github.com/fridrichmethod/UncertaintyCalculator/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Python tool for automated error propagation in physical experiments. This calculator uses symbolic differentiation to compute partial derivatives and propagate uncertainties, generating detailed LaTeX output for your reports.
 
@@ -38,11 +37,8 @@ The calculator is designed to be used as a Python module. Below is a complete ex
 The equation is defined as a list of strings containing the left-hand side (variable name) and the right-hand side (expression).
 
 ```python
-# Example: W = (-Q_V * m - Q_N - Q_M) / Dt - rho * V * C
-equation = [
-    x.strip() for x in
-    r'W = (-Q_V*m-Q_N-Q_M)/Dt-rho*V*C'.split('=')
-]
+# Define equation
+equation = [r"\zeta", r"(K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)"]
 ```
 
 ### 2. Define Variables
@@ -53,17 +49,16 @@ Variables are defined as a list of tuples. Each tuple contains:
 2. The LaTeX representation of the variable symbol.
 
 ```python
+# Define variables
 variables = [
-    ('Q_V = -26.414 +- 0', r'Q_V'),
-    ('m = 0.9547 +- 0.0004/sqrt(3)', r'm'),
-    ('Q_N = -0.323 +- 3.243*0.0004/sqrt(3)', r'Q_\ce{Ni}'),
-    ('Q_M = -0.01 +- 0.0002*16.736/sqrt(3)', r'Q_\text{cotton}'),
-    ('rho = 0.99865 +- 0', r'\rho_\ce{H2O}'),
-    ('V = 3000 +- 0.01', r'V'),
-    ('C = 4.1824e-3 +- 0', r'C_\ce{H2O}'),
-    ('Dt = 1.770 +- 0.009', r'\Delta T'),
+    ("K = 4 +- 0", r"K"),
+    ("eta = 0.9358e-3 +- 0.0001/sqrt(3)", r"\eta"),
+    ("u = 3.68e-5 +- 0.11e-5", r"u"),
+    ("l = 0.2256 +- 0.0019", r"l"),
+    ("phi = 100 +- 1/sqrt(3)", r"\varphi"),
+    ("e_0 = 8.8541878128e-12 +- 0", r"\varepsilon_0"),
+    ("e_r = 78.7 +- 0.1/sqrt(3)", r"\varepsilon_\text{r}"),
 ]
-
 ```
 
 ### 3. Configuration
@@ -71,19 +66,23 @@ variables = [
 Configure the output format, precision, and units.
 
 ```python
-# Precision for result (mu) and uncertainty (sigma)
+# Set digits of results
 digits = {
-    'mu': 4,
-    'sigma': 2,
+    "mu": 3,
+    "sigma": 3,
 }
 
-# Final unit string in LaTeX (use 1 for dimensionless)
-last_unit = r'\text{kJ}/{}^\circ\text{C}'
+# Set units of results
+last_unit = r"\text{V}"
 
-# Formatting flags
-separate = True             # True: Separate blocks, False: Combined block
-insert = True               # True: Show intermediate substitution steps
-include_equation_number = True # True: Use numbered equations, False: Use unnumbered (equation*)
+# Print separately or integrally
+separate = False
+
+# Insert numbers or not
+insert = False
+
+# Include equation number or not
+include_equation_number = True
 ```
 
 ### 4. Run the Calculator
@@ -101,7 +100,7 @@ def main():
         last_unit=last_unit,
         separate=separate,
         insert=insert,
-        include_equation_number=include_equation_number
+        include_equation_number=include_equation_number,
     )
     
     # Print the generated LaTeX code
@@ -117,26 +116,21 @@ The tool generates LaTeX code that renders to standard physical chemistry calcul
 
 ```latex
 \begin{equation}
-W=- C_\ce{H2O} V \rho_\ce{H2O} + \frac{- Q_\text{cotton} - Q_\ce{Ni} - Q_V m}{\Delta T}=- \left(0.0041824\right) \times \left(3000\right) \times \left(0.99865\right) + \frac{- \left(-0.01\right) - \left(-0.323\right) - \left(-26.414\right) \times \left(0.9547\right)}{\left(1.77\right)}=1.905\ \text{kJ}/{}^\circ\text{C}
-\end{equation}
-
-\begin{equation}
 \begin{aligned}
-\frac{\partial W }{\partial m }&=- \frac{Q_V}{\Delta T}=- \frac{\left(-26.414\right)}{\left(1.77\right)}=15.0\\
-\frac{\partial W }{\partial Q_\ce{Ni} }&=- \frac{1}{\Delta T}=- \frac{1}{\left(1.77\right)}=-0.57\\
-\dots
+\zeta&=\frac{K \eta l u}{4 \varepsilon_0 \varepsilon_\text{r} \varphi}=0.111\ \textrm{V}\\
+\\
+\frac{\partial \zeta }{\partial \eta }&=\frac{K l u}{4 \varepsilon_0 \varepsilon_\text{r} \varphi}=1.2 \times 10^{2}\\
+\frac{\partial \zeta }{\partial u }&=\frac{K \eta l}{4 \varepsilon_0 \varepsilon_\text{r} \varphi}=3.0 \times 10^{3}\\
+\frac{\partial \zeta }{\partial l }&=\frac{K \eta u}{4 \varepsilon_0 \varepsilon_\text{r} \varphi}=0.49\\
+\frac{\partial \zeta }{\partial \varphi }&=- \frac{K \eta l u}{4 \varepsilon_0 \varepsilon_\text{r} \varphi^{2}}=-0.0011\\
+\frac{\partial \zeta }{\partial \varepsilon_\text{r} }&=- \frac{K \eta l u}{4 \varepsilon_0 \varepsilon_\text{r}^{2} \varphi}=-0.0014\\
+\\
+\sigma_{\zeta}&=\sqrt{\left(\frac{\partial \zeta }{\partial \eta } \sigma_{\eta}\right)^2+\left(\frac{\partial \zeta }{\partial u } \sigma_{u}\right)^2+\left(\frac{\partial \zeta }{\partial l } \sigma_{l}\right)^2+\left(\frac{\partial \zeta }{\partial \varphi } \sigma_{\varphi}\right)^2+\left(\frac{\partial \zeta }{\partial \varepsilon_\text{r} } \sigma_{\varepsilon_\text{r}}\right)^2}\\
+&=\sqrt{\left(0.0069\right)^2+\left(0.0033\right)^2+\left(0.00094\right)^2+\left(-0.00064\right)^2+\left(-8.2 \times 10^{-5}\right)^2}\\
+&=0.00773\ \textrm{V}\\
+\\
+\zeta&=\left (0.111 \pm 0.00773 \right )\ \textrm{V}
 \end{aligned}
-\end{equation}
-
-\begin{equation}
-\begin{aligned}
-\sigma_{W}&=\sqrt{\left(\frac{\partial W }{\partial m } \sigma_{m}\right)^2+\dots}\\
-&=0.073\ \text{kJ}/{}^\circ\text{C}
-\end{aligned}
-\end{equation}
-
-\begin{equation}
-W=\left (1.905 \pm 0.073 \right )\ \text{kJ}/{}^\circ\text{C}
 \end{equation}
 ```
 
