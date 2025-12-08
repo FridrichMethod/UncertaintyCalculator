@@ -92,22 +92,25 @@ Import the `UncertaintyCalculator` and execute the calculation.
 ```python
 from uncertainty_calculator import UncertaintyCalculator
 
-def main():
-    calculator = UncertaintyCalculator(
-        equation=equation,
-        variables=variables,
-        digits=digits,
-        last_unit=last_unit,
-        separate=separate,
-        insert=insert,
-        include_equation_number=include_equation_number,
-    )
-    
-    # Print the generated LaTeX code
-    print(calculator.run(), end="")
+calculator = UncertaintyCalculator(
+    equation=equation,
+    variables=variables,
+    digits=digits,
+    last_unit=last_unit,
+    separate=separate,
+    insert=insert,
+    include_equation_number=include_equation_number,
+)
 
-if __name__ == "__main__":
-    main()
+latex_string = calculator.run()
+```
+
+### 5. Render the LaTeX String
+
+```python
+from IPython.display import Latex
+
+Latex(latex_string)
 ```
 
 ## Output Example
@@ -133,6 +136,10 @@ The tool generates LaTeX code that renders to standard physical chemistry calcul
 \end{aligned}
 \end{equation}
 ```
+
+Rendered results:
+
+![Rendered results](./assets/latex_rendered.png)
 
 ## Acknowledgements
 
