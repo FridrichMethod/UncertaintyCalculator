@@ -10,6 +10,25 @@
 
 A Python tool for automated error propagation in physical experiments. This calculator uses symbolic differentiation to compute partial derivatives and propagate uncertainties, generating detailed LaTeX output for your reports.
 
+## Table of Contents
+
+- [Uncertainty Calculator](#uncertainty-calculator)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [Requirements](#requirements)
+    - [Install via uv](#install-via-uv)
+  - [Usage](#usage)
+    - [Code layout](#code-layout)
+    - [1. Define the Equation](#1-define-the-equation)
+    - [2. Define Variables](#2-define-variables)
+    - [3. Configuration](#3-configuration)
+    - [4. Run the Calculator](#4-run-the-calculator)
+    - [5. Render the LaTeX String](#5-render-the-latex-string)
+  - [Output Example](#output-example)
+  - [Acknowledgements](#acknowledgements)
+  - [License](#license)
+
 ## Features
 
 - **Symbolic Differentiation**: Automatically calculates partial derivatives using `sympy`.
@@ -35,6 +54,17 @@ uv pip install -e .[dev]
 ## Usage
 
 The calculator is designed to be used as a Python module. Below is a complete example of how to configure and run calculation.
+
+### Code layout
+
+The core logic is organized by responsibility:
+
+- `calculator.py`: orchestrates the pipeline
+- `parsing.py`: builds symbols/mappings from inputs
+- `compute.py`: performs derivatives and numeric propagation
+- `rendering.py`: produces LaTeX output
+- `types.py`: input dataclasses and type aliases
+- `formatting.py` / `validation.py`: shared helpers
 
 ### 1. Define the Equation
 

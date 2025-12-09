@@ -26,7 +26,8 @@ class Variable:
 
     Attributes:
         name: The variable symbol used in the equation (e.g., "K").
-        value: The value of the variable. Can be a number or a string expression (e.g., "4", "1/sqrt(3)").
+        value: The value of the variable. Can be a number or a string expression
+            (e.g., "4", "1/sqrt(3)").
         uncertainty: The uncertainty of the variable. Can be a number or string expression.
         latex_name: The LaTeX representation of the variable (e.g., r"\eta").
 
