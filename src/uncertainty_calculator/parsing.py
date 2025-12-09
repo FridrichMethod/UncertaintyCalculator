@@ -40,7 +40,14 @@ def parse_inputs(equation: Equation, variables: Variables) -> ParseState:
     input_fullsigma: list[str] = []
     input_fullunc: list[str] = []
 
+    seen_names: set[str] = set()
+
     for var_item in variables:
+        if var_item.name in seen_names:
+            msg = f"Duplicate variable name detected: {var_item.name!r}"
+            raise ValueError(msg)
+        seen_names.add(var_item.name)
+
         sym_str = var_item.name
         val_mu_str = str(var_item.value)
         val_sigma_str = str(var_item.uncertainty)
