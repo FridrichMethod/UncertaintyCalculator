@@ -18,7 +18,6 @@ def _simple_parse_state(value: str, uncertainty: str = "0.1"):
 
 def test_compute_zero_uncertainty_sets_zero_derivative_and_sigma():
     """Zero uncertainty should produce zero derivatives and zero sigma."""
-
     parse_state = _simple_parse_state(value="2", uncertainty="0")
     compute_state = compute(parse_state, digits=Digits(mu=2, sigma=2))
 
@@ -27,4 +26,3 @@ def test_compute_zero_uncertainty_sets_zero_derivative_and_sigma():
     assert pdv_expr == S.Zero
     assert pdv_num == S.Zero
     assert compute_state.result_sigma == "0"
-

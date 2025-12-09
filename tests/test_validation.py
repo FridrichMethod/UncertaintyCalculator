@@ -9,7 +9,6 @@ from uncertainty_calculator import Digits, Equation, UncertaintyCalculator, Vari
 
 def test_missing_variable_validation():
     """Validation should fail when equation references undefined symbols."""
-
     equation = Equation(lhs="y", rhs="m*x + b")  # 'b' is missing
     variables = [
         Variable(name="m", value=1, uncertainty=0.1, latex_name="m"),
@@ -29,4 +28,3 @@ def test_missing_variable_validation():
 
     with pytest.raises(ValueError, match="Symbol 'b' used in equation but not defined"):
         calc.run()
-

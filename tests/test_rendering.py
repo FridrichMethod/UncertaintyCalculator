@@ -17,10 +17,11 @@ def _simple_parse_state(value: str, uncertainty: str = "0.1"):
 
 def test_render_output_combined_contains_sigma_line():
     """Combined rendering should include sigma line and equation alignment."""
-
     parse_state = _simple_parse_state(value="2", uncertainty="0.5")
     compute_state = compute(parse_state, digits=Digits(mu=2, sigma=2))
-    options = RenderOptions(last_unit=None, separate=False, insert=False, include_equation_number=False)
+    options = RenderOptions(
+        last_unit=None, separate=False, insert=False, include_equation_number=False
+    )
 
     output = render_output(parse_state, compute_state, options)
     assert "\\begin{aligned}" in output
@@ -30,7 +31,6 @@ def test_render_output_combined_contains_sigma_line():
 
 def test_zero_uncertainty_renders_sigma_without_empty_sqrt():
     """Sigma rendering should short-circuit when uncertainties are zero."""
-
     digits = Digits(mu=2, sigma=2)
     calc = UncertaintyCalculator(
         equation=Equation(lhs="y", rhs="x"),
@@ -45,4 +45,3 @@ def test_zero_uncertainty_renders_sigma_without_empty_sqrt():
     output = calc.run()
     assert "\\sigma_{y}&=0" in output
     assert "sqrt{" not in output
-

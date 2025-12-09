@@ -64,6 +64,29 @@ CASES: list[RawCase] = [
             ("v = 5.0 +- 0.1", "v"),
         ],
     ),
+    RawCase(
+        name="trig_exp",
+        equation=["I", "I0 * exp(-t/tau) * sin(omega*t + phi)"],
+        variables=[
+            ("I0 = 2.0 +- 0.05", r"I_0"),
+            ("t = 0.25 +- 0.01", "t"),
+            ("tau = 1.2 +- 0.02", r"\tau"),
+            ("omega = 3.14 +- 0.01", r"\omega"),
+            ("phi = 0.1 +- 0.02", r"\phi"),
+        ],
+    ),
+    RawCase(
+        name="rational_mixed",
+        equation=["Z", "(a*b + c)/(d - e*f)"],
+        variables=[
+            ("a = 1.5 +- 0.01", "a"),
+            ("b = 2.5 +- 0.02", "b"),
+            ("c = 0.75 +- 0.005", "c"),
+            ("d = 10 +- 0.1", "d"),
+            ("e = 0.5 +- 0.01", "e"),
+            ("f = 4 +- 0.2", "f"),
+        ],
+    ),
 ]
 
 

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from tests.conftest import RawCase
 from tests.legacy_calculator import run_legacy_calculator
 from uncertainty_calculator import Digits, Equation, UncertaintyCalculator, Variable
@@ -20,7 +18,6 @@ def test_calculator_output_matches_legacy(
     include_equation_number,
 ):
     """Refactored calculator should match the legacy implementation."""
-
     expected_output = run_legacy_calculator(
         equation=raw_case.equation,
         variables=raw_case.variables,
@@ -47,7 +44,6 @@ def test_calculator_output_matches_legacy(
 
 def test_run_can_be_called_multiple_times_with_new_inputs():
     """Calculator should not leak state between runs when inputs change."""
-
     digits = Digits(mu=2, sigma=2)
     calc = UncertaintyCalculator(
         equation=Equation(lhs="y", rhs="x"),
@@ -72,7 +68,6 @@ def test_run_can_be_called_multiple_times_with_new_inputs():
 
 def test_variable_dataclass_input():
     """Calculator should accept dataclass inputs and return a string output."""
-
     equation_obj = Equation(lhs=r"\zeta", rhs=r"K*x")
     variables_obj = [
         Variable(name="K", value="2", uncertainty="0.1", latex_name="K"),
@@ -95,7 +90,6 @@ def test_variable_dataclass_input():
 
 def test_mixed_input_types():
     """Numeric values provided as float/int should be accepted."""
-
     equation = Equation(lhs="y", rhs="x")
     variables = [Variable(name="x", value=10.5, uncertainty=0.5, latex_name="x")]
     digits = Digits(mu=2, sigma=2)
@@ -111,4 +105,3 @@ def test_mixed_input_types():
     )
 
     calc.run()
-
