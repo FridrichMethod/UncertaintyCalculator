@@ -29,15 +29,13 @@ def test_calculator_output_matches_legacy(
     )
 
     calculator = UncertaintyCalculator(
-        equation=equation,
-        variables=variables,
         digits=digits,
         last_unit=last_unit,
         separate=separate,
         insert=insert,
         include_equation_number=include_equation_number,
     )
-    actual_output = calculator.run()
+    actual_output = calculator.run(equation=equation, variables=variables)
 
     assert actual_output == expected_output
 
@@ -46,8 +44,6 @@ def test_run_can_be_called_multiple_times_with_new_inputs():
     """Calculator should not leak state between runs when inputs change."""
     digits = Digits(mu=2, sigma=2)
     calc = UncertaintyCalculator(
-        equation=Equation(lhs="y", rhs="x"),
-        variables=[Variable(name="x", value=1, uncertainty=0.1, latex_name="x")],
         digits=digits,
         last_unit=None,
         separate=False,
@@ -55,15 +51,32 @@ def test_run_can_be_called_multiple_times_with_new_inputs():
         include_equation_number=False,
     )
 
-    first_output = calc.run()
+    first_output = calc.run(
+        equation=Equation(lhs="y", rhs="x"),
+        variables=[Variable(name="x", value=1, uncertainty=0.1, latex_name="x")],
+    )
     assert "\\sigma_{x}" in first_output
 
-    calc.equation = Equation(lhs="y", rhs="m")
-    calc.variables = [Variable(name="m", value=2, uncertainty=0.2, latex_name="m")]
-    second_output = calc.run()
+    second_output = calc.run(
+        equation=Equation(lhs="y", rhs="m"),
+        variables=[Variable(name="m", value=2, uncertainty=0.2, latex_name="m")],
+    )
 
     assert "\\sigma_{m}" in second_output
     assert "\\sigma_{x}" not in second_output
+
+
+def test_constructor_accepts_only_configuration_arguments():
+    """Calculation inputs should be provided to run(), not the constructor."""
+    calc = UncertaintyCalculator(
+        digits=Digits(mu=2, sigma=2),
+        last_unit=None,
+        separate=False,
+        insert=False,
+        include_equation_number=False,
+    )
+
+    assert calc.digits == Digits(mu=2, sigma=2)
 
 
 def test_variable_dataclass_input():
@@ -76,8 +89,6 @@ def test_variable_dataclass_input():
     digits = Digits(mu=2, sigma=2)
 
     calc_obj = UncertaintyCalculator(
-        equation=equation_obj,
-        variables=variables_obj,
         digits=digits,
         last_unit=None,
         separate=False,
@@ -85,7 +96,7 @@ def test_variable_dataclass_input():
         include_equation_number=False,
     )
 
-    assert isinstance(calc_obj.run(), str)
+    assert isinstance(calc_obj.run(equation=equation_obj, variables=variables_obj), str)
 
 
 def test_mixed_input_types():
@@ -95,8 +106,6 @@ def test_mixed_input_types():
     digits = Digits(mu=2, sigma=2)
 
     calc = UncertaintyCalculator(
-        equation=equation,
-        variables=variables,
         digits=digits,
         last_unit="",
         separate=False,
@@ -104,4 +113,4 @@ def test_mixed_input_types():
         include_equation_number=False,
     )
 
-    calc.run()
+    calc.run(equation=equation, variables=variables)

@@ -33,8 +33,6 @@ def test_zero_uncertainty_renders_sigma_without_empty_sqrt():
     """Sigma rendering should short-circuit when uncertainties are zero."""
     digits = Digits(mu=2, sigma=2)
     calc = UncertaintyCalculator(
-        equation=Equation(lhs="y", rhs="x"),
-        variables=[Variable(name="x", value=1, uncertainty=0, latex_name="x")],
         digits=digits,
         last_unit=None,
         separate=False,
@@ -42,6 +40,9 @@ def test_zero_uncertainty_renders_sigma_without_empty_sqrt():
         include_equation_number=False,
     )
 
-    output = calc.run()
+    output = calc.run(
+        equation=Equation(lhs="y", rhs="x"),
+        variables=[Variable(name="x", value=1, uncertainty=0, latex_name="x")],
+    )
     assert "\\sigma_{y}&=0" in output
     assert "sqrt{" not in output

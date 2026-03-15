@@ -17,8 +17,6 @@ def test_missing_variable_validation():
     digits = Digits(mu=2, sigma=2)
 
     calc = UncertaintyCalculator(
-        equation=equation,
-        variables=variables,
         digits=digits,
         last_unit="",
         separate=False,
@@ -27,4 +25,4 @@ def test_missing_variable_validation():
     )
 
     with pytest.raises(ValueError, match="Symbol 'b' used in equation but not defined"):
-        calc.run()
+        calc.run(equation=equation, variables=variables)

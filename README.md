@@ -130,8 +130,6 @@ Import the `UncertaintyCalculator` and execute the calculation.
 from uncertainty_calculator import UncertaintyCalculator
 
 calculator = UncertaintyCalculator(
-    equation=equation,
-    variables=variables,
     digits=digits,
     last_unit=last_unit,
     separate=separate,
@@ -139,7 +137,7 @@ calculator = UncertaintyCalculator(
     include_equation_number=include_equation_number,
 )
 
-latex_string = calculator.run()
+latex_string = calculator.run(equation=equation, variables=variables)
 
 print(latex_string)
 ```

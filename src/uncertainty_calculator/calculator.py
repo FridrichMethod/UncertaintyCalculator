@@ -14,26 +14,22 @@ class UncertaintyCalculator:
 
     def __init__(
         self,
-        equation: Equation,
-        variables: Variables,
         digits: Digits,
         last_unit: LastUnit,
         separate: bool,
         insert: bool,
         include_equation_number: bool,
     ) -> None:
-        """Initialize the calculator with all configuration options."""
-        self.equation = equation
-        self.variables = variables
+        """Initialize the calculator with rendering and precision configuration."""
         self.digits = digits
         self.last_unit = last_unit
         self.separate = separate
         self.insert = insert
         self.include_equation_number = include_equation_number
 
-    def run(self) -> str:
+    def run(self, equation: Equation, variables: Variables) -> str:
         """Execute the calculation pipeline and return the LaTeX string."""
-        parse_state: ParseState = parse_inputs(self.equation, self.variables)
+        parse_state: ParseState = parse_inputs(equation, variables)
         validate_inputs(parse_state)
         compute_state: ComputeState = compute(parse_state, self.digits)
 
