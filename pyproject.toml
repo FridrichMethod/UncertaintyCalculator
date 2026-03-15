@@ -159,6 +159,7 @@ where = ["src"]
 "uncertainty_calculator" = []
 
 [tool.pytest.ini_options]
-addopts = "-v -s --tb=short --strict-markers --color=yes"
+addopts = "-v -s --tb=short --strict-markers --color=yes -n auto"
 testpaths = ["tests"]
+pythonpath = ["src"]
 env = ["TQDM_DISABLE=1"]
