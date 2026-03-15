@@ -10,7 +10,7 @@ license = { file = "LICENSE" }
 readme = "README.md"
 description = "Uncertainty Calculator"
 requires-python = ">=3.12"
-dependencies = ["jupyter", "sympy"]
+dependencies = ["sympy"]
 
 [tool.setuptools.dynamic]
 version = { attr = "uncertainty_calculator.__version__" }
@@ -27,6 +27,7 @@ dev = [
   "ruff",
   "mypy",
 ]
+notebook = ["jupyter"]
 
 [tool.ruff]
 target-version = "py312"
