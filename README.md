@@ -86,14 +86,14 @@ from uncertainty_calculator import Variable
 
 # Define variables
 variables = [
-    Variable(name="K", value="4", uncertainty="0", latex_name="K"),
-    Variable(name="eta", value="0.9358e-3", uncertainty="0.0001/sqrt(3)", latex_name=r"\eta"),
-    Variable(name="u", value="3.68e-5", uncertainty="0.11e-5", latex_name="u"),
-    Variable(name="l", value="0.2256", uncertainty="0.0019", latex_name="l"),
-    Variable(name="phi", value="100", uncertainty="1/sqrt(3)", latex_name=r"\varphi"),
-    Variable(name="e_0", value="8.8541878128e-12", uncertainty="0", latex_name=r"\varepsilon_0"),
+    Variable(name="K", value=4.0, uncertainty=0.0, latex_name="K"),
+    Variable(name="eta", value=0.9358e-3, uncertainty=5.773502691896258e-05, latex_name=r"\eta"),
+    Variable(name="u", value=3.68e-5, uncertainty=0.11e-5, latex_name="u"),
+    Variable(name="l", value=0.2256, uncertainty=0.0019, latex_name="l"),
+    Variable(name="phi", value=100.0, uncertainty=0.5773502691896257, latex_name=r"\varphi"),
+    Variable(name="e_0", value=8.8541878128e-12, uncertainty=0.0, latex_name=r"\varepsilon_0"),
     Variable(
-        name="e_r", value="78.7", uncertainty="0.1/sqrt(3)", latex_name=r"\varepsilon_\text{r}"
+        name="e_r", value=78.7, uncertainty=0.057735026918962574, latex_name=r"\varepsilon_\text{r}"
     ),
 ]
 ```

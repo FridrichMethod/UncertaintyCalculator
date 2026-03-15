@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
 
+from sympy import SympifyError, sympify
+
 from uncertainty_calculator import Equation, Variable
 
 
@@ -17,7 +19,7 @@ def parse_equation(raw_equation: Sequence[str]) -> Equation:
 
 
 def parse_variables(raw_variables: Iterable[tuple[str, str]]) -> list[Variable]:
-    """Convert legacy variable tuples into Variable dataclasses."""
+    """Convert legacy variable tuples into Variable dataclasses with numeric fields."""
     parsed: list[Variable] = []
     for definition, latex_name in raw_variables:
         parts = definition.split("=")
@@ -29,8 +31,12 @@ def parse_variables(raw_variables: Iterable[tuple[str, str]]) -> list[Variable]:
         if len(value_parts) != 2:
             msg = f"Invalid value/uncertainty format: '{definition}'"
             raise ValueError(msg)
-        value = value_parts[0].strip()
-        uncertainty = value_parts[1].strip()
+        try:
+            value = float(sympify(value_parts[0].strip()))
+            uncertainty = float(sympify(value_parts[1].strip()))
+        except (SympifyError, TypeError, ValueError) as exc:
+            msg = f"Invalid numeric value/uncertainty in definition: '{definition}'"
+            raise ValueError(msg) from exc
         parsed.append(
             Variable(
                 name=name,

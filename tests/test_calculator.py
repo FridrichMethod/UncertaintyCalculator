@@ -7,6 +7,14 @@ from tests.legacy_calculator import run_legacy_calculator
 from uncertainty_calculator import Digits, Equation, UncertaintyCalculator, Variable
 
 
+def _legacy_variables_from_dataclasses(variables: list[Variable]) -> list[tuple[str, str]]:
+    """Convert numeric Variable inputs back to the legacy tuple shape for parity checks."""
+    return [
+        (f"{variable.name} = {variable.value} +- {variable.uncertainty}", variable.latex_name)
+        for variable in variables
+    ]
+
+
 def test_calculator_output_matches_legacy(
     raw_case: RawCase,
     equation,
@@ -17,10 +25,10 @@ def test_calculator_output_matches_legacy(
     insert,
     include_equation_number,
 ):
-    """Refactored calculator should match the legacy implementation."""
+    """Refactored calculator should match float-normalized legacy rendering."""
     expected_output = run_legacy_calculator(
-        equation=raw_case.equation,
-        variables=raw_case.variables,
+        equation=[equation.lhs, equation.rhs],
+        variables=_legacy_variables_from_dataclasses(list(variables)),
         digits=digits,
         last_unit=last_unit,
         separate=separate,
@@ -83,8 +91,8 @@ def test_variable_dataclass_input():
     """Calculator should accept dataclass inputs and return a string output."""
     equation_obj = Equation(lhs=r"\zeta", rhs=r"K*x")
     variables_obj = [
-        Variable(name="K", value="2", uncertainty="0.1", latex_name="K"),
-        Variable(name="x", value="3", uncertainty="0.2", latex_name="x"),
+        Variable(name="K", value=2.0, uncertainty=0.1, latex_name="K"),
+        Variable(name="x", value=3.0, uncertainty=0.2, latex_name="x"),
     ]
     digits = Digits(mu=2, sigma=2)
 

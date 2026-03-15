@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from dataclasses import dataclass
+from numbers import Real
 
 
 @dataclass
@@ -26,17 +27,25 @@ class Variable:
 
     Attributes:
         name: The variable symbol used in the equation (e.g., "K").
-        value: The value of the variable. Can be a number or a string expression
-            (e.g., "4", "1/sqrt(3)").
-        uncertainty: The uncertainty of the variable. Can be a number or string expression.
+        value: The numeric value of the variable.
+        uncertainty: The numeric uncertainty of the variable.
         latex_name: The LaTeX representation of the variable (e.g., r"\eta").
 
     """
 
     name: str
-    value: str | float
-    uncertainty: str | float
+    value: float
+    uncertainty: float
     latex_name: str
+
+    def __post_init__(self) -> None:
+        """Validate that numeric fields are real numbers and normalize them to floats."""
+        for field_name in ("value", "uncertainty"):
+            field_value = getattr(self, field_name)
+            if isinstance(field_value, bool) or not isinstance(field_value, Real):
+                msg = f"{field_name} must be a real number (got {field_value!r})"
+                raise TypeError(msg)
+            setattr(self, field_name, float(field_value))
 
 
 @dataclass

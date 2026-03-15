@@ -10,7 +10,7 @@ from uncertainty_calculator.compute import compute
 from uncertainty_calculator.parsing import parse_inputs
 
 
-def _simple_parse_state(value: str, uncertainty: str = "0.1"):
+def _simple_parse_state(value: float, uncertainty: float = 0.1):
     equation = Equation(lhs="y", rhs="x")
     variables = [Variable(name="x", value=value, uncertainty=uncertainty, latex_name="x")]
     return parse_inputs(equation, variables)
@@ -18,7 +18,7 @@ def _simple_parse_state(value: str, uncertainty: str = "0.1"):
 
 def test_compute_zero_uncertainty_sets_zero_derivative_and_sigma():
     """Zero uncertainty should produce zero derivatives and zero sigma."""
-    parse_state = _simple_parse_state(value="2", uncertainty="0")
+    parse_state = _simple_parse_state(value=2.0, uncertainty=0.0)
     compute_state = compute(parse_state, digits=Digits(mu=2, sigma=2))
 
     symbol, pdv_expr, pdv_num = compute_state.pdv_results[0]

@@ -49,8 +49,6 @@ def parse_inputs(equation: Equation, variables: Variables) -> ParseState:
         seen_names.add(var_item.name)
 
         sym_str = var_item.name
-        val_mu_str = str(var_item.value)
-        val_sigma_str = str(var_item.uncertainty)
         latex_repr = var_item.latex_name.strip()
 
         symbol_names.append(sym_str)
@@ -58,8 +56,8 @@ def parse_inputs(equation: Equation, variables: Variables) -> ParseState:
         latex_symbols.append(latex_repr)
         input_fullunc.append(f"\\sigma_{{{latex_repr}}}")
 
-        numeric_mu = sympify(val_mu_str)
-        numeric_sigma = sympify(val_sigma_str)
+        numeric_mu = sympify(var_item.value)
+        numeric_sigma = sympify(var_item.uncertainty)
 
         input_mu.append(numeric_mu)
         input_sigma.append(numeric_sigma)

@@ -31,8 +31,8 @@ def test_parse_variables_parses_value_and_uncertainty():
     ]
     variables = parse_variables(raw)
     assert [var.name for var in variables] == ["X", "Y"]
-    assert variables[0].value == "1"
-    assert variables[0].uncertainty == "0.1"
+    assert variables[0].value == 1.0
+    assert variables[0].uncertainty == 0.1
     assert variables[1].latex_name == "Y"
 
 
