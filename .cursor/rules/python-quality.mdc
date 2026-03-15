@@ -1,0 +1,25 @@
+---
+description: Python quality guardrails aligned with pyproject tooling
+globs: **/*.py
+alwaysApply: false
+---
+
+# Python Quality Rules
+
+- Match Python 3.12 assumptions and typing style used in `src/uncertainty_calculator`.
+- Follow lint/type expectations from `pyproject.toml` (`ruff`, `mypy`).
+- Keep imports absolute and first-party package names under `uncertainty_calculator`.
+- Keep docstrings concise and meaningful for modules, public classes, and functions.
+
+## Testing Expectations
+
+- Add or update targeted tests in `tests/` for any non-trivial behavior change.
+- Preserve deterministic output for rendering and numerical propagation paths.
+- Keep legacy-parity-sensitive paths covered when touching calculator pipeline behavior.
+
+## Command Discipline
+
+- Always activate env first: `source .venv/bin/activate`.
+- Prefer running:
+  - `pre-commit run --all-files`
+  - `pytest -n auto --dist=loadscope tests/`

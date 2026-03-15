@@ -1,0 +1,25 @@
+---
+description: Project architecture and regression-safe workflow for uncertainty LaTeX generation
+alwaysApply: true
+---
+
+# Uncertainty Calculator Architecture
+
+- Keep the canonical flow: `parse_inputs()` -> `validate_inputs()` -> `compute()` -> `render_output()`.
+- Keep module boundaries strict:
+  - `parsing.py`: input normalization and symbol/value maps
+  - `validation.py`: invalid/missing symbol checks
+  - `compute.py`: derivatives and uncertainty propagation math
+  - `rendering.py`: LaTeX assembly and layout modes
+  - `formatting.py`: shared SymPy-to-LaTeX helper wrappers
+
+## Safety and Compatibility
+
+- Preserve public API behavior for `Equation`, `Variable`, `Digits`, and `UncertaintyCalculator.run()`.
+- Treat LaTeX output as regression-sensitive; avoid accidental formatting drift.
+- For behavior changes, update/add focused tests in `tests/` and keep intent explicit.
+
+## Execution
+
+- Source environment first: `source .venv/bin/activate`.
+- Validate with project-standard commands (`pre-commit`, `pytest`) before finalizing.
