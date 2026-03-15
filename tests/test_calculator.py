@@ -27,7 +27,7 @@ def test_calculator_output_matches_legacy(
 ):
     """Refactored calculator should match float-normalized legacy rendering."""
     expected_output = run_legacy_calculator(
-        equation=[equation.lhs, equation.rhs],
+        equation=[equation.latex_name, equation.expression],
         variables=_legacy_variables_from_dataclasses(list(variables)),
         digits=digits,
         last_unit=last_unit,
@@ -60,13 +60,13 @@ def test_run_can_be_called_multiple_times_with_new_inputs():
     )
 
     first_output = calc.run(
-        equation=Equation(lhs="y", rhs="x"),
+        equation=Equation(latex_name="y", expression="x"),
         variables=[Variable(name="x", value=1, uncertainty=0.1, latex_name="x")],
     )
     assert "\\sigma_{x}" in first_output
 
     second_output = calc.run(
-        equation=Equation(lhs="y", rhs="m"),
+        equation=Equation(latex_name="y", expression="m"),
         variables=[Variable(name="m", value=2, uncertainty=0.2, latex_name="m")],
     )
 
@@ -89,7 +89,7 @@ def test_constructor_accepts_only_configuration_arguments():
 
 def test_variable_dataclass_input():
     """Calculator should accept dataclass inputs and return a string output."""
-    equation_obj = Equation(lhs=r"\zeta", rhs=r"K*x")
+    equation_obj = Equation(latex_name=r"\zeta", expression=r"K*x")
     variables_obj = [
         Variable(name="K", value=2.0, uncertainty=0.1, latex_name="K"),
         Variable(name="x", value=3.0, uncertainty=0.2, latex_name="x"),
@@ -109,7 +109,7 @@ def test_variable_dataclass_input():
 
 def test_mixed_input_types():
     """Numeric values provided as float/int should be accepted."""
-    equation = Equation(lhs="y", rhs="x")
+    equation = Equation(latex_name="y", expression="x")
     variables = [Variable(name="x", value=10.5, uncertainty=0.5, latex_name="x")]
     digits = Digits(mu=2, sigma=2)
 

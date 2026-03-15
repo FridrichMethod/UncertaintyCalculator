@@ -11,7 +11,7 @@ from uncertainty_calculator.parsing import parse_inputs
 
 
 def _simple_parse_state(value: float, uncertainty: float = 0.1):
-    equation = Equation(lhs="y", rhs="x")
+    equation = Equation(latex_name="y", expression="x")
     variables = [Variable(name="x", value=value, uncertainty=uncertainty, latex_name="x")]
     return parse_inputs(equation, variables)
 

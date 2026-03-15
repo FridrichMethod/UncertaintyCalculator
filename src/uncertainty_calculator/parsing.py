@@ -24,8 +24,8 @@ class ParseState:
     uncertainty_values: Mapping[Symbol, Any]
     input_fullunc: list[str]
     input_sigma: list[Any]
-    equation_left: str
-    equation_right: Any
+    equation_latex_name: str
+    equation_expression: Any
 
 
 def parse_inputs(equation: Equation, variables: Variables) -> ParseState:
@@ -77,8 +77,8 @@ def parse_inputs(equation: Equation, variables: Variables) -> ParseState:
     output_value = dict(zip(symbols_parsed + unc_symbols, input_fullmu + input_fullsigma))
     uncertainty_values = dict(zip(symbols_parsed, input_sigma))
 
-    equation_left = equation.lhs
-    equation_right = sympify(equation.rhs, locals=symbol_map)
+    equation_latex_name = equation.latex_name
+    equation_expression = sympify(equation.expression, locals=symbol_map)
 
     return ParseState(
         symbols=symbols_parsed,
@@ -89,6 +89,6 @@ def parse_inputs(equation: Equation, variables: Variables) -> ParseState:
         uncertainty_values=uncertainty_values,
         input_fullunc=input_fullunc,
         input_sigma=input_sigma,
-        equation_left=equation_left,
-        equation_right=equation_right,
+        equation_latex_name=equation_latex_name,
+        equation_expression=equation_expression,
     )

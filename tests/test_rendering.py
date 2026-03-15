@@ -10,7 +10,7 @@ from uncertainty_calculator.rendering import RenderOptions, render_output
 
 
 def _simple_parse_state(value: float, uncertainty: float = 0.1):
-    equation = Equation(lhs="y", rhs="x")
+    equation = Equation(latex_name="y", expression="x")
     variables = [Variable(name="x", value=value, uncertainty=uncertainty, latex_name="x")]
     return parse_inputs(equation, variables)
 
@@ -41,7 +41,7 @@ def test_zero_uncertainty_renders_sigma_without_empty_sqrt():
     )
 
     output = calc.run(
-        equation=Equation(lhs="y", rhs="x"),
+        equation=Equation(latex_name="y", expression="x"),
         variables=[Variable(name="x", value=1, uncertainty=0, latex_name="x")],
     )
     assert "\\sigma_{y}&=0" in output

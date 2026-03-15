@@ -12,13 +12,15 @@ class Equation:
     """An equation definition for the uncertainty calculator.
 
     Attributes:
-        lhs: The left-hand side of the equation (variable name).
-        rhs: The right-hand side of the equation (expression).
+        latex_name: The rendered left-hand symbol that appears in the final LaTeX.
+        expression: The symbolic right-hand-side expression written using
+            `Variable.name` identifiers. This is only used for computation and
+            does not appear verbatim in the final rendered output.
 
     """
 
-    lhs: str
-    rhs: str
+    latex_name: str
+    expression: str
 
 
 @dataclass

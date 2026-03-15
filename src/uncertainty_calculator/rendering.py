@@ -61,11 +61,11 @@ def _render_equation_def(
     aligned: bool,
 ) -> None:
     separator = "&=" if aligned else "="
-    printer(parse_state.equation_left, end=separator)
-    printer(latex_symbol(parse_state.equation_right, parse_state.output_symbol), end="=")
+    printer(parse_state.equation_latex_name, end=separator)
+    printer(latex_symbol(parse_state.equation_expression, parse_state.output_symbol), end="=")
 
     if options.insert:
-        printer(latex_value(parse_state.equation_right, parse_state.output_value), end="=")
+        printer(latex_value(parse_state.equation_expression, parse_state.output_value), end="=")
 
     res_str = (
         compute_state.result_mu
@@ -93,7 +93,7 @@ def _render_pdvs(
             continue
 
         lhs = (
-            f"\\frac{{\\partial {parse_state.equation_left} }}"
+            f"\\frac{{\\partial {parse_state.equation_latex_name} }}"
             f"{{\\partial {parse_state.output_symbol[symbol]} }}"
         )
         printer(lhs, end=separator)
@@ -110,7 +110,7 @@ def _sigma_symbolic_terms(parse_state: ParseState) -> list[str]:
     for symbol, fullunc in zip(parse_state.symbols, parse_state.input_fullunc):
         if parse_state.uncertainty_values[symbol]:
             terms.append(
-                f"\\left(\\frac{{\\partial {parse_state.equation_left} }}"
+                f"\\left(\\frac{{\\partial {parse_state.equation_latex_name} }}"
                 f"{{\\partial {parse_state.output_symbol[symbol]} }} {fullunc}\\right)^2"
             )
     return terms
@@ -151,7 +151,7 @@ def _render_sigma(
             if options.last_unit is None
             else f"{compute_state.result_sigma}\\ {options.last_unit}"
         )
-        printer(f"\\sigma_{{{parse_state.equation_left}}}&=", end="")
+        printer(f"\\sigma_{{{parse_state.equation_latex_name}}}&=", end="")
         if not options.separate:
             printer(f"{res_str}\\\\\n\\\\")
         else:
@@ -159,7 +159,9 @@ def _render_sigma(
         return
 
     symbolic_terms = _sigma_symbolic_terms(parse_state)
-    printer(f"\\sigma_{{{parse_state.equation_left}}}&=\\sqrt{{{'+'.join(symbolic_terms)}}}\\\\")
+    printer(
+        f"\\sigma_{{{parse_state.equation_latex_name}}}&=\\sqrt{{{'+'.join(symbolic_terms)}}}\\\\"
+    )
 
     if options.insert:
         intermediate_terms = _sigma_intermediate_terms(parse_state, compute_state)
@@ -191,12 +193,12 @@ def _render_result_line(
 
     if options.last_unit is None:
         line = (
-            f"{parse_state.equation_left}{separator}"
+            f"{parse_state.equation_latex_name}{separator}"
             f"{compute_state.result_mu} \\pm {compute_state.result_sigma}"
         )
     else:
         line = (
-            f"{parse_state.equation_left}{separator}\\left ({compute_state.result_mu} "
+            f"{parse_state.equation_latex_name}{separator}\\left ({compute_state.result_mu} "
             f"\\pm {compute_state.result_sigma} \\right )\\ {options.last_unit}"
         )
 

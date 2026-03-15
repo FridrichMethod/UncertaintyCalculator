@@ -26,14 +26,14 @@ def compute(parse_state: ParseState, digits: Digits) -> ComputeState:
     pdv_results: list[tuple[Any, Any, Any]] = []
     for symbol in parse_state.symbols:
         if parse_state.uncertainty_values[symbol]:
-            pdv = simplify(diff(parse_state.equation_right, symbol))
+            pdv = simplify(diff(parse_state.equation_expression, symbol))
             num = pdv.subs(parse_state.output_number)  # type: ignore
             pdv_results.append((symbol, pdv, num))
         else:
             pdv_results.append((symbol, S.Zero, S.Zero))
 
     result_mu = latex_number(
-        parse_state.equation_right.evalf(digits.mu, subs=parse_state.output_number)  # type: ignore
+        parse_state.equation_expression.evalf(digits.mu, subs=parse_state.output_number)  # type: ignore
     )
 
     pdv_nums = [res[2] for res in pdv_results]

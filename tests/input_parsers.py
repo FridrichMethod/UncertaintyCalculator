@@ -10,12 +10,12 @@ from uncertainty_calculator import Equation, Variable
 
 
 def parse_equation(raw_equation: Sequence[str]) -> Equation:
-    """Convert a (lhs, rhs) sequence into an Equation dataclass."""
+    """Convert a (latex_name, expression) sequence into an Equation dataclass."""
     if len(raw_equation) != 2:
-        msg = "Equation must contain exactly two entries (lhs, rhs)."
+        msg = "Equation must contain exactly two entries (latex_name, expression)."
         raise ValueError(msg)
-    lhs, rhs = raw_equation
-    return Equation(lhs=lhs.strip(), rhs=rhs.strip())
+    latex_name, expression = raw_equation
+    return Equation(latex_name=latex_name.strip(), expression=expression.strip())
 
 
 def parse_variables(raw_variables: Iterable[tuple[str, str]]) -> list[Variable]:

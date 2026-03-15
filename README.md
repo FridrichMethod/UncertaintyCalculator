@@ -68,13 +68,18 @@ The core logic is organized by responsibility:
 
 ### 1. Define the Equation
 
-The equation can be defined using the `Equation` class.
+The equation can be defined using the `Equation` class. `latex_name` is the
+rendered result symbol, while `expression` is the internal symbolic formula
+written with variable `name`s.
 
 ```python
 from uncertainty_calculator import Equation
 
 # Define equation
-equation = Equation(lhs=r"\zeta", rhs=r"(K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)")
+equation = Equation(
+    latex_name=r"\zeta",
+    expression=r"(K*pi*eta*u*l)/(4*pi*phi*e_0*e_r)",
+)
 ```
 
 ### 2. Define Variables

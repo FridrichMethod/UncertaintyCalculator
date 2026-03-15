@@ -13,8 +13,8 @@ def test_parse_equation_trims_and_builds_dataclass():
     """Whitespace should be stripped when building Equation."""
     raw = ["  A  ", "  B + C  "]
     equation = parse_equation(raw)
-    assert equation.lhs == "A"
-    assert equation.rhs == "B + C"
+    assert equation.latex_name == "A"
+    assert equation.expression == "B + C"
 
 
 def test_parse_equation_invalid_length_raises():
@@ -44,7 +44,7 @@ def test_parse_variables_invalid_definition():
 
 def test_parsing_rejects_duplicate_variable_names():
     """Duplicate variable names should raise a ValueError."""
-    equation = Equation(lhs="y", rhs="x + z")
+    equation = Equation(latex_name="y", expression="x + z")
     variables = [
         Variable(name="x", value=1, uncertainty=0.1, latex_name="x"),
         Variable(name="x", value=2, uncertainty=0.2, latex_name="x_dup"),

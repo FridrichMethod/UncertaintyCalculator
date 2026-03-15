@@ -8,7 +8,7 @@ from uncertainty_calculator.parsing import ParseState
 def validate_inputs(parse_state: ParseState) -> None:
     """Ensure all symbols referenced in the equation are defined by variables."""
     defined_symbols = set(parse_state.symbols)
-    free_symbols = parse_state.equation_right.free_symbols
+    free_symbols = parse_state.equation_expression.free_symbols
 
     for sym in free_symbols:
         if sym not in defined_symbols:
