@@ -189,3 +189,16 @@ addopts = "-v -s --tb=short --strict-markers --color=yes -n auto"
 testpaths = ["tests"]
 pythonpath = ["src"]
 env = ["TQDM_DISABLE=1"]
+
+[tool.coverage.run]
+source = ["src/uncertainty_calculator"]
+omit = ["*/tests/*", "*__pycache__*"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "def __repr__",
+  "raise NotImplementedError",
+  "if TYPE_CHECKING:",
+]
+fail_under = 0

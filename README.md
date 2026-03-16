@@ -3,6 +3,7 @@
 <p align="left">
   <a href="https://www.python.org/downloads/release/python-3120/"><img alt="Python 3.12+" src="https://img.shields.io/badge/Python-3.12+-blue.svg?logo=python&logoColor=white"></a>
   <a href="https://github.com/fridrichmethod/UncertaintyCalculator/actions"><img alt="CI Status" src="https://github.com/fridrichmethod/UncertaintyCalculator/workflows/CI/badge.svg"></a>
+  <a href="https://codecov.io/gh/fridrichmethod/UncertaintyCalculator"><img alt="codecov" src="https://codecov.io/gh/fridrichmethod/UncertaintyCalculator/branch/main/graph/badge.svg"></a>
   <a href="https://github.com/astral-sh/ruff"><img alt="Code style: ruff" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json"></a>
   <a href="https://mypy-lang.org/"><img alt="Checked with mypy" src="https://www.mypy-lang.org/static/mypy_badge.svg"></a>
   <a href="https://github.com/pre-commit/pre-commit"><img alt="pre-commit" src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit"></a>
