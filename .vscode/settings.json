@@ -1,4 +1,6 @@
 {
+  "mypy-type-checker.args": ["--config-file=pyproject.toml"],
+  "python-envs.defaultEnvManager": "ms-python.python:venv",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false
