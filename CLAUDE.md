@@ -18,17 +18,17 @@ produce LaTeX that includes evaluated value and propagated uncertainty, plus opt
 
 ## Key Compatibility Constraints
 
-- Preserve the dataclass API in `src/uncertainty_calculator/types.py`.
+- Preserve the dataclass API in `src/uncertainty_calculator/_types.py`.
 - Preserve orchestration contract in `src/uncertainty_calculator/calculator.py`.
 - Treat output format as regression-sensitive; tests compare against legacy behavior.
 
 ## Where to Edit
 
-- Parsing or symbol mapping changes: `parsing.py`
+- Parsing or symbol mapping changes: `parsers.py`
 - Validation rules: `validation.py`
 - Derivative or uncertainty math: `compute.py`
-- LaTeX layout/output switches: `rendering.py`
-- LaTeX helper options: `formatting.py`
+- LaTeX layout/output switches: `render.py`
+- LaTeX helper options: `format.py`
 
 ## Test Discipline
 

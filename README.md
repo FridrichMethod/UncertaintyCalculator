@@ -64,11 +64,11 @@ The calculator is designed to be used as a Python module. Below is a complete ex
 The core logic is organized by responsibility:
 
 - `calculator.py`: orchestrates the pipeline
-- `parsing.py`: builds symbols/mappings from inputs
+- `parsers.py`: builds symbols/mappings from inputs
 - `compute.py`: performs derivatives and numeric propagation
-- `rendering.py`: produces LaTeX output
-- `types.py`: input dataclasses and type aliases
-- `formatting.py` / `validation.py`: shared helpers
+- `render.py`: produces LaTeX output
+- `_types.py`: input dataclasses and type aliases
+- `format.py` / `validation.py`: shared helpers
 
 ### 1. Define the Equation
 

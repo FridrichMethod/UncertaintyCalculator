@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from uncertainty_calculator._types import Digits, Equation, Variables
 from uncertainty_calculator.compute import ComputeState, compute
-from uncertainty_calculator.parsing import ParseState, parse_inputs
-from uncertainty_calculator.rendering import RenderOptions, render_output
+from uncertainty_calculator.parsers import ParseState, parse_inputs
+from uncertainty_calculator.render import RenderOptions, render_output
 from uncertainty_calculator.validation import validate_inputs
 
 

@@ -1,11 +1,11 @@
 # pyright: reportMissingImports=false
-"""Tests for formatting helpers."""
+"""Tests for format helpers."""
 
 from __future__ import annotations
 
 from sympy import sympify
 
-from uncertainty_calculator.formatting import latex_number
+from uncertainty_calculator.format import latex_number
 
 
 def test_latex_number_basic_formatting():

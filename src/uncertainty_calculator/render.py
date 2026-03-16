@@ -1,4 +1,4 @@
-"""Rendering helpers for the uncertainty calculator."""
+"""Render helpers for the uncertainty calculator."""
 
 from __future__ import annotations
 
@@ -7,13 +7,13 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from uncertainty_calculator.compute import ComputeState
-from uncertainty_calculator.formatting import latex_number, latex_symbol, latex_value
-from uncertainty_calculator.parsing import ParseState
+from uncertainty_calculator.format import latex_number, latex_symbol, latex_value
+from uncertainty_calculator.parsers import ParseState
 
 
 @dataclass
 class RenderOptions:
-    """Rendering configuration for the output."""
+    """Render configuration for the output."""
 
     last_unit: str | None
     separate: bool

@@ -1,12 +1,12 @@
 # pyright: reportMissingImports=false
-"""Tests for rendering helpers."""
+"""Tests for render helpers."""
 
 from __future__ import annotations
 
 from uncertainty_calculator import Digits, Equation, UncertaintyCalculator, Variable
 from uncertainty_calculator.compute import compute
-from uncertainty_calculator.parsing import parse_inputs
-from uncertainty_calculator.rendering import RenderOptions, render_output
+from uncertainty_calculator.parsers import parse_inputs
+from uncertainty_calculator.render import RenderOptions, render_output
 
 
 def _simple_parse_state(value: float, uncertainty: float = 0.1):
@@ -16,7 +16,7 @@ def _simple_parse_state(value: float, uncertainty: float = 0.1):
 
 
 def test_render_output_combined_contains_sigma_line():
-    """Combined rendering should include sigma line and equation alignment."""
+    """Combined render should include sigma line and equation alignment."""
     parse_state = _simple_parse_state(value=2.0, uncertainty=0.5)
     compute_state = compute(parse_state, digits=Digits(mu=2, sigma=2))
     options = RenderOptions(
@@ -30,7 +30,7 @@ def test_render_output_combined_contains_sigma_line():
 
 
 def test_zero_uncertainty_renders_sigma_without_empty_sqrt():
-    """Sigma rendering should short-circuit when uncertainties are zero."""
+    """Sigma render should short-circuit when uncertainties are zero."""
     digits = Digits(mu=2, sigma=2)
     calc = UncertaintyCalculator(
         digits=digits,

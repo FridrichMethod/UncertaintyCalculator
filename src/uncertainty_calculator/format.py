@@ -1,4 +1,4 @@
-"""Formatting helpers for LaTeX output."""
+"""Format helpers for LaTeX output."""
 
 from __future__ import annotations
 

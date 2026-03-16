@@ -8,8 +8,8 @@ from typing import Any
 from sympy import S, diff, simplify, sqrt
 
 from uncertainty_calculator._types import Digits
-from uncertainty_calculator.formatting import latex_number
-from uncertainty_calculator.parsing import ParseState
+from uncertainty_calculator.format import latex_number
+from uncertainty_calculator.parsers import ParseState
 
 
 @dataclass

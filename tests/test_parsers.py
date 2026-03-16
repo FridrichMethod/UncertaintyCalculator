@@ -1,4 +1,4 @@
-"""Tests for parsing helpers."""
+"""Tests for parsers helpers."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import pytest
 
 from tests.input_parsers import parse_equation, parse_variables
 from uncertainty_calculator import Equation, Variable
-from uncertainty_calculator.parsing import parse_inputs
+from uncertainty_calculator.parsers import parse_inputs
 
 
 def test_parse_equation_trims_and_builds_dataclass():

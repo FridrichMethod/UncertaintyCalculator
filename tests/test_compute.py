@@ -7,7 +7,7 @@ from sympy import S, Symbol
 
 from uncertainty_calculator import Digits, Equation, Variable
 from uncertainty_calculator.compute import compute
-from uncertainty_calculator.parsing import parse_inputs
+from uncertainty_calculator.parsers import parse_inputs
 
 
 def _simple_parse_state(value: float, uncertainty: float = 0.1):

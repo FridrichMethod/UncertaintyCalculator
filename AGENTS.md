@@ -9,10 +9,10 @@
 
 ## Core Pipeline (Do Not Bypass)
 
-1. `parse_inputs()` in `src/uncertainty_calculator/parsing.py`
+1. `parse_inputs()` in `src/uncertainty_calculator/parsers.py`
 2. `validate_inputs()` in `src/uncertainty_calculator/validation.py`
 3. `compute()` in `src/uncertainty_calculator/compute.py`
-4. `render_output()` in `src/uncertainty_calculator/rendering.py`
+4. `render_output()` in `src/uncertainty_calculator/render.py`
 
 Keep logic in the right layer. Prefer extending an existing stage over mixing concerns across modules.
 
@@ -25,11 +25,11 @@ Keep logic in the right layer. Prefer extending an existing stage over mixing co
 
 ## Module Ownership
 
-- `parsing.py`: normalize and map inputs into SymPy-friendly structures.
+- `parsers.py`: normalize and map inputs into SymPy-friendly structures.
 - `validation.py`: reject undefined or invalid symbolic references.
 - `compute.py`: derivatives and numeric uncertainty propagation.
-- `rendering.py`: LaTeX structure/format (combined vs separate, insert vs non-insert).
-- `formatting.py`: SymPy-to-LaTeX helper wrappers only.
+- `render.py`: LaTeX structure/format (combined vs separate, insert vs non-insert).
+- `format.py`: SymPy-to-LaTeX helper wrappers only.
 
 ## Change Rules
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from uncertainty_calculator.parsing import ParseState
+from uncertainty_calculator.parsers import ParseState
 
 
 def validate_inputs(parse_state: ParseState) -> None:

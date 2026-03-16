@@ -9,12 +9,12 @@ from typing import Any
 from sympy import Symbol, symbols, sympify
 
 from uncertainty_calculator._types import Equation, Variables
-from uncertainty_calculator.formatting import latex_number
+from uncertainty_calculator.format import latex_number
 
 
 @dataclass
 class ParseState:
-    """Intermediate parsed inputs ready for computation/rendering."""
+    """Intermediate parsed inputs ready for computation/render."""
 
     symbols: list[Symbol]
     unc_symbols: list[Symbol]
