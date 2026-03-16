@@ -42,13 +42,13 @@ def _env_start(printer: Callable[..., None], include_number: bool, aligned: bool
     suffix = "" if include_number else "*"
     printer(f"\\begin{{equation{suffix}}}")
     if aligned:
-        printer("\\begin{aligned}")  # noqa: RUF027
+        printer("\\begin{aligned}")
 
 
 def _env_end(printer: Callable[..., None], include_number: bool, aligned: bool) -> None:
     suffix = "" if include_number else "*"
     if aligned:
-        printer("\\end{aligned}")  # noqa: RUF027
+        printer("\\end{aligned}")
     printer(f"\\end{{equation{suffix}}}")
 
 
