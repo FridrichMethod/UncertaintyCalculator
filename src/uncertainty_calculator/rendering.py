@@ -9,14 +9,13 @@ from dataclasses import dataclass
 from uncertainty_calculator.compute import ComputeState
 from uncertainty_calculator.formatting import latex_number, latex_symbol, latex_value
 from uncertainty_calculator.parsing import ParseState
-from uncertainty_calculator.types import LastUnit
 
 
 @dataclass
 class RenderOptions:
     """Rendering configuration for the output."""
 
-    last_unit: LastUnit
+    last_unit: str | None
     separate: bool
     insert: bool
     include_equation_number: bool

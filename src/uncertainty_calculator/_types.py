@@ -67,4 +67,3 @@ class Digits:
 
 # Type definitions matching Python 3.12 style
 type Variables = Iterable[Variable]
-type LastUnit = str | None

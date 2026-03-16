@@ -8,8 +8,8 @@ from typing import Any
 
 from sympy import Symbol, symbols, sympify
 
+from uncertainty_calculator._types import Equation, Variables
 from uncertainty_calculator.formatting import latex_number
-from uncertainty_calculator.types import Equation, Variables
 
 
 @dataclass

@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from uncertainty_calculator._types import Digits, Equation, Variables
 from uncertainty_calculator.compute import ComputeState, compute
 from uncertainty_calculator.parsing import ParseState, parse_inputs
 from uncertainty_calculator.rendering import RenderOptions, render_output
-from uncertainty_calculator.types import Digits, Equation, LastUnit, Variables
 from uncertainty_calculator.validation import validate_inputs
 
 
@@ -15,7 +15,7 @@ class UncertaintyCalculator:
     def __init__(
         self,
         digits: Digits,
-        last_unit: LastUnit,
+        last_unit: str | None,
         separate: bool,
         insert: bool,
         include_equation_number: bool,

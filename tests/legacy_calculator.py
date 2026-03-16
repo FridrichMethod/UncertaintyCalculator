@@ -8,14 +8,14 @@ import io
 from collections.abc import Iterable, Sequence
 
 from sympy import diff, latex, simplify, sqrt, symbols, sympify
-from uncertainty_calculator import Digits, LastUnit
+from uncertainty_calculator import Digits
 
 
 def run_legacy_calculator(  # noqa: C901
     equation: Sequence[str],
     variables: Iterable[tuple[str, str]],
     digits: Digits,
-    last_unit: LastUnit,
+    last_unit: str | None,
     separate: bool,
     insert: bool,
     include_equation_number: bool,
