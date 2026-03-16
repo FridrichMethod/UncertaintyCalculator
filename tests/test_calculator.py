@@ -16,7 +16,7 @@ def _legacy_variables_from_dataclasses(variables: list[Variable]) -> list[tuple[
 
 
 def test_calculator_output_matches_legacy(
-    raw_case: RawCase,
+    raw_case: RawCase,  # noqa: ARG001 (fixture only; equation/variables derive from it)
     equation,
     variables,
     digits,
