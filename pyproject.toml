@@ -5,12 +5,37 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "uncertainty_calculator"
 dynamic = ["version"]
-authors = [{ name = "Zhaoyang Li", email = "zhaoyangli@stanford.edu" }]
-license = { file = "LICENSE" }
+description = "Automated error propagation for physical experiments: symbolic derivatives, uncertainty propagation, and LaTeX output for reports."
 readme = "README.md"
-description = "Uncertainty Calculator"
+license = { file = "LICENSE" }
+authors = [{ name = "Zhaoyang Li", email = "zhaoyangli@stanford.edu" }]
+keywords = [
+  "uncertainty",
+  "error-propagation",
+  "sympy",
+  "latex",
+  "physics",
+  "experiment",
+  "differentiation",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Education",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Physics",
+]
 requires-python = ">=3.12"
 dependencies = ["sympy"]
+
+[project.urls]
+Homepage = "https://github.com/fridrichmethod/UncertaintyCalculator"
+Repository = "https://github.com/fridrichmethod/UncertaintyCalculator"
+Documentation = "https://github.com/fridrichmethod/UncertaintyCalculator#readme"
+Issues = "https://github.com/fridrichmethod/UncertaintyCalculator/issues"
 
 [tool.setuptools.dynamic]
 version = { attr = "uncertainty_calculator.__version__" }
