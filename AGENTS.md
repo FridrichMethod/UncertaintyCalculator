@@ -21,6 +21,12 @@ pytest -n auto --dist=loadscope tests/
 
 Use Python 3.12 assumptions from `pyproject.toml`.
 
+## Code Quality
+
+- Follow the lint and type expectations configured in `pyproject.toml` (`ruff`, `mypy`).
+- Keep imports absolute, with first-party names under `uncertainty_calculator`.
+- Keep docstrings concise and meaningful for modules, public classes, and functions.
+
 ## Core Pipeline (Do Not Bypass)
 
 1. `parse_inputs()` in `src/uncertainty_calculator/parsers.py`
